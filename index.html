@@ -5,6 +5,9 @@
 <title>Keka Leave Time</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
+<!-- DYNAMIC FAVICON -->
+<link id="favicon" rel="icon" type="image/svg+xml">
+
 <style>
 :root{
   --accent:#4f46e5;
@@ -40,7 +43,6 @@ body{
   padding:24px;
 }
 
-/* HEADER */
 header{
   display:flex;
   justify-content:space-between;
@@ -57,7 +59,6 @@ header span{font-size:13px;color:var(--muted)}
   cursor:pointer;
 }
 
-/* GRID */
 .grid{
   display:grid;
   grid-template-columns:1fr 1fr;
@@ -67,7 +68,6 @@ header span{font-size:13px;color:var(--muted)}
   .grid{grid-template-columns:1fr}
 }
 
-/* CARD */
 .card{
   background:var(--card);
   border:1px solid var(--border);
@@ -75,7 +75,6 @@ header span{font-size:13px;color:var(--muted)}
   padding:20px;
 }
 
-/* HOURS */
 .hours{
   display:grid;
   grid-template-columns:repeat(3,1fr);
@@ -95,7 +94,6 @@ header span{font-size:13px;color:var(--muted)}
   color:#fff;
 }
 
-/* INPUT */
 textarea{
   width:100%;
   height:200px;
@@ -107,7 +105,6 @@ textarea{
   color:var(--text);
 }
 
-/* PROGRESS */
 .progress{
   display:flex;
   align-items:center;
@@ -142,7 +139,6 @@ circle{
   animation:pulse 1.5s infinite;
 }
 
-/* STATS */
 .stats{
   display:grid;
   grid-template-columns:1fr 1fr;
@@ -157,7 +153,6 @@ circle{
 .stat h4{margin:0;font-size:13px;color:var(--muted)}
 .stat p{margin:6px 0 0;font-size:18px;font-weight:800}
 
-/* LEAVE */
 .leave{
   margin-top:24px;
   padding:24px;
@@ -169,7 +164,6 @@ circle{
 .leave h2{margin:0;font-size:34px;font-weight:900}
 .leave span{font-size:14px;opacity:.9}
 
-/* TIMELINE */
 .timeline{margin-top:24px}
 .bar{
   display:flex;
@@ -205,7 +199,6 @@ circle{
 
 <div class="grid">
 
-<!-- INPUT -->
 <div class="card">
   <div class="hours">
     <div class="hour active" data-sec="30600">8.5 Hours</div>
@@ -215,7 +208,6 @@ circle{
   <textarea id="logs" placeholder="Paste Keka logs here…"></textarea>
 </div>
 
-<!-- STATUS -->
 <div class="card">
   <div class="progress">
     <svg viewBox="0 0 100 100">
@@ -267,12 +259,38 @@ let timer=null;
 let liveStart=0;
 let baseWorked=0;
 
+/* ---------- FAVICON ---------- */
+function setFavicon(state, percent=0){
+  let bg="#4f46e5", icon="⏱";
+  if(state==="working") bg="#ef4444";
+  if(state==="done"){ bg="#22c55e"; icon="✔"; }
+
+  const r=40, c=2*Math.PI*r;
+  const dash=c*percent/100;
+
+  const svg=`
+  <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'>
+    <rect width='100' height='100' rx='20' fill='${bg}'/>
+    ${state!=="done"?`
+    <circle cx='50' cy='50' r='${r}' fill='none'
+      stroke='white' stroke-width='8' opacity='.25'/>
+    <circle cx='50' cy='50' r='${r}' fill='none'
+      stroke='white' stroke-width='8'
+      stroke-dasharray='${c}'
+      stroke-dashoffset='${c-dash}'
+      transform='rotate(-90 50 50)'/>`:``}
+    <text x='50' y='68' text-anchor='middle'
+      font-size='44' fill='white'>${icon}</text>
+  </svg>`;
+  favicon.href="data:image/svg+xml,"+encodeURIComponent(svg);
+}
+
 const toSec=t=>{
   const d=new Date("1970-01-01 "+t);
   return d.getHours()*3600+d.getMinutes()*60+d.getSeconds();
 };
 const fmt=s=>`${Math.floor(s/3600)}h ${Math.floor(s%3600/60)}m ${s%60}s`;
-const clock=s=>new Date(`1970-01-01T${String(s/3600|0).padStart(2,'0')}:${String(s%3600/60|0).padStart(2,'0')}:00`).toLocaleTimeString();
+const clock=s=>new Date(1970,0,1,0,0,s).toLocaleTimeString();
 
 document.querySelectorAll(".hour").forEach(h=>{
   h.onclick=()=>{
@@ -290,75 +308,65 @@ function calc(){
 
   const lines=logs.value.split("\n").map(x=>x.trim()).filter(x=>x&&x!=="MISSING");
   if(!lines.length){
-    worked.textContent="–";
-    remaining.textContent="–";
-    leave.textContent="–";
-    percent.textContent="0%";
-    ring.style.strokeDashoffset=ringLen;
+    setFavicon("idle",0);
     return;
   }
 
-  let workedSec=0,lastOut=0,isLive=false;
+  let workedSec=0,isLive=false;
 
   for(let i=0;i<lines.length;i+=2){
     const a=toSec(lines[i]);
     if(lines[i+1]){
       const b=toSec(lines[i+1]);
       workedSec+=b-a;
-      lastOut=b;
       add(b-a,false);
     }else{
       isLive=true;
       liveStart=a;
       baseWorked=workedSec;
-      const now=toSec(new Date().toLocaleTimeString());
-      workedSec+=now-a;
-      lastOut=now;
-      add(now-a,true);
+      add(toSec(new Date().toLocaleTimeString())-a,true);
     }
   }
 
-  updateUI(workedSec,lastOut,isLive);
+  updateUI(workedSec,isLive);
 }
 
-function updateUI(workedSec,lastOut,isLive){
-  worked.textContent=fmt(workedSec);
+function updateUI(workedSec,isLive){
   const pct=Math.min(100,workedSec/requiredSeconds*100);
   percent.textContent=Math.floor(pct)+"%";
   ring.style.strokeDashoffset=ringLen-(ringLen*pct/100);
+  worked.textContent=fmt(workedSec);
 
   if(isLive){
     live.style.display="flex";
-    startLiveCountdown(lastOut);
+    setFavicon("working",pct);
+    startLive();
   }else{
     const rem=Math.max(0,requiredSeconds-workedSec);
     remaining.textContent=fmt(rem);
-    leave.textContent=rem?clock(lastOut+rem):"Completed 🎉";
-    countdown.textContent="";
+    leave.textContent=rem?clock(toSec(new Date().toLocaleTimeString())+rem):"Completed 🎉";
+    setFavicon(rem? "idle":"done",pct);
   }
 }
 
-function startLiveCountdown(lastOut){
+function startLive(){
   timer=setInterval(()=>{
     const now=toSec(new Date().toLocaleTimeString());
     const liveWorked=baseWorked+(now-liveStart);
     const rem=Math.max(0,requiredSeconds-liveWorked);
+    const pct=Math.min(100,liveWorked/requiredSeconds*100);
 
     worked.textContent=fmt(liveWorked);
     remaining.textContent=fmt(rem);
-
-    const pct=Math.min(100,liveWorked/requiredSeconds*100);
     percent.textContent=Math.floor(pct)+"%";
     ring.style.strokeDashoffset=ringLen-(ringLen*pct/100);
+    setFavicon(rem>0?"working":"done",pct);
 
     if(rem<=0){
       leave.textContent="Completed 🎉";
-      countdown.textContent="";
       clearInterval(timer);
     }else{
-      const leaveAt=now+rem;
-      leave.textContent=clock(leaveAt);
-      countdown.textContent=fmt(rem);
+      leave.textContent=clock(now+rem);
     }
   },1000);
 }
@@ -372,6 +380,7 @@ function add(sec,r){
 
 logs.addEventListener("input",calc);
 function toggleTheme(){document.body.classList.toggle("dark");}
+setFavicon("idle",0);
 </script>
 </body>
 </html>
