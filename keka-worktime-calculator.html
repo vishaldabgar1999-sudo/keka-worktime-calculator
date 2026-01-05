@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Keka Leave Time</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+:root{
+  --accent:#4f46e5;
+  --bg:#f5f7ff;
+  --card:#ffffff;
+  --text:#0f172a;
+  --muted:#64748b;
+  --border:#e5e7eb;
+  --danger:#ef4444;
+}
+body.dark{
+  --bg:#020617;
+  --card:#020617;
+  --text:#e5e7eb;
+  --muted:#94a3b8;
+  --border:#1e293b;
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:Inter,Segoe UI,Arial;
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+}
+
+.app{
+  width:100%;
+  max-width:1200px;
+  padding:24px;
+}
+
+/* HEADER */
+header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:24px;
+}
+header h1{margin:0;font-size:26px;font-weight:900}
+header span{font-size:13px;color:var(--muted)}
+.icon-btn{
+  border:1px solid var(--border);
+  background:var(--card);
+  border-radius:12px;
+  padding:10px 12px;
+  cursor:pointer;
+}
+
+/* GRID */
+.grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:24px;
+}
+@media(max-width:900px){
+  .grid{grid-template-columns:1fr}
+}
+
+/* CARD */
+.card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:20px;
+  padding:20px;
+}
+
+/* HOURS */
+.hours{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:14px;
+  margin-bottom:18px;
+}
+.hour{
+  border:2px solid var(--border);
+  border-radius:16px;
+  padding:16px;
+  text-align:center;
+  cursor:pointer;
+}
+.hour.active{
+  background:linear-gradient(135deg,var(--accent),#6366f1);
+  border-color:var(--accent);
+  color:#fff;
+}
+
+/* INPUT */
+textarea{
+  width:100%;
+  height:200px;
+  padding:14px;
+  border-radius:14px;
+  border:1px solid var(--border);
+  font-family:monospace;
+  background:transparent;
+  color:var(--text);
+}
+
+/* PROGRESS */
+.progress{
+  display:flex;
+  align-items:center;
+  gap:22px;
+}
+svg{width:140px;height:140px}
+circle{
+  fill:none;
+  stroke-width:12;
+  transform:rotate(-90deg);
+  transform-origin:50% 50%;
+}
+.bg{stroke:#e5e7eb}
+.fg{
+  stroke:var(--accent);
+  stroke-linecap:round;
+  transition:.2s;
+}
+
+.live{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  color:var(--danger);
+  font-weight:700;
+  font-size:13px;
+}
+.dot{
+  width:10px;height:10px;
+  background:var(--danger);
+  border-radius:50%;
+  animation:pulse 1.5s infinite;
+}
+
+/* STATS */
+.stats{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:14px;
+  margin-top:18px;
+}
+.stat{
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:14px;
+}
+.stat h4{margin:0;font-size:13px;color:var(--muted)}
+.stat p{margin:6px 0 0;font-size:18px;font-weight:800}
+
+/* LEAVE */
+.leave{
+  margin-top:24px;
+  padding:24px;
+  border-radius:22px;
+  background:linear-gradient(135deg,var(--accent),#6366f1);
+  color:#fff;
+  text-align:center;
+}
+.leave h2{margin:0;font-size:34px;font-weight:900}
+.leave span{font-size:14px;opacity:.9}
+
+/* TIMELINE */
+.timeline{margin-top:24px}
+.bar{
+  display:flex;
+  height:26px;
+  border-radius:13px;
+  overflow:hidden;
+  background:#e5e7eb;
+}
+.block{background:var(--accent);margin-right:2px}
+.block.running{
+  background:var(--danger);
+  animation:pulse 1.5s infinite;
+}
+
+@keyframes pulse{
+  0%{opacity:.6}
+  50%{opacity:1}
+  100%{opacity:.6}
+}
+</style>
+</head>
+
+<body>
+<div class="app">
+
+<header>
+  <div>
+    <h1>⏱ Keka Leave Time</h1>
+    <span>Paste logs → live calculation</span>
+  </div>
+  <button class="icon-btn" onclick="toggleTheme()">🌙</button>
+</header>
+
+<div class="grid">
+
+<!-- INPUT -->
+<div class="card">
+  <div class="hours">
+    <div class="hour active" data-sec="30600">8.5 Hours</div>
+    <div class="hour" data-sec="27000">7.5 Hours</div>
+    <div class="hour" data-sec="16200">4.5 Hours</div>
+  </div>
+  <textarea id="logs" placeholder="Paste Keka logs here…"></textarea>
+</div>
+
+<!-- STATUS -->
+<div class="card">
+  <div class="progress">
+    <svg viewBox="0 0 100 100">
+      <circle class="bg" cx="50" cy="50" r="45"/>
+      <circle class="fg" cx="50" cy="50" r="45"
+              stroke-dasharray="283"
+              stroke-dashoffset="283"
+              id="ring"/>
+    </svg>
+    <div>
+      <div style="font-size:28px;font-weight:900" id="percent">0%</div>
+      <div class="live" id="live" style="display:none">
+        <span class="dot"></span> Working now
+      </div>
+    </div>
+  </div>
+
+  <div class="stats">
+    <div class="stat">
+      <h4>Total Worked</h4>
+      <p id="worked">–</p>
+    </div>
+    <div class="stat">
+      <h4>Remaining</h4>
+      <p id="remaining">–</p>
+    </div>
+  </div>
+
+  <div class="leave">
+    <span>Leave At</span>
+    <h2 id="leave">–</h2>
+    <span id="countdown"></span>
+  </div>
+</div>
+
+</div>
+
+<div class="card timeline">
+  <h4>📊 Work Sessions</h4>
+  <div class="bar" id="timeline"></div>
+</div>
+
+</div>
+
+<script>
+const ringLen=283;
+let requiredSeconds=30600;
+let timer=null;
+let liveStart=0;
+let baseWorked=0;
+
+const toSec=t=>{
+  const d=new Date("1970-01-01 "+t);
+  return d.getHours()*3600+d.getMinutes()*60+d.getSeconds();
+};
+const fmt=s=>`${Math.floor(s/3600)}h ${Math.floor(s%3600/60)}m ${s%60}s`;
+const clock=s=>new Date(`1970-01-01T${String(s/3600|0).padStart(2,'0')}:${String(s%3600/60|0).padStart(2,'0')}:00`).toLocaleTimeString();
+
+document.querySelectorAll(".hour").forEach(h=>{
+  h.onclick=()=>{
+    document.querySelectorAll(".hour").forEach(x=>x.classList.remove("active"));
+    h.classList.add("active");
+    requiredSeconds=+h.dataset.sec;
+    calc();
+  };
+});
+
+function calc(){
+  clearInterval(timer);
+  timeline.innerHTML="";
+  live.style.display="none";
+
+  const lines=logs.value.split("\n").map(x=>x.trim()).filter(x=>x&&x!=="MISSING");
+  if(!lines.length){
+    worked.textContent="–";
+    remaining.textContent="–";
+    leave.textContent="–";
+    percent.textContent="0%";
+    ring.style.strokeDashoffset=ringLen;
+    return;
+  }
+
+  let workedSec=0,lastOut=0,isLive=false;
+
+  for(let i=0;i<lines.length;i+=2){
+    const a=toSec(lines[i]);
+    if(lines[i+1]){
+      const b=toSec(lines[i+1]);
+      workedSec+=b-a;
+      lastOut=b;
+      add(b-a,false);
+    }else{
+      isLive=true;
+      liveStart=a;
+      baseWorked=workedSec;
+      const now=toSec(new Date().toLocaleTimeString());
+      workedSec+=now-a;
+      lastOut=now;
+      add(now-a,true);
+    }
+  }
+
+  updateUI(workedSec,lastOut,isLive);
+}
+
+function updateUI(workedSec,lastOut,isLive){
+  worked.textContent=fmt(workedSec);
+  const pct=Math.min(100,workedSec/requiredSeconds*100);
+  percent.textContent=Math.floor(pct)+"%";
+  ring.style.strokeDashoffset=ringLen-(ringLen*pct/100);
+
+  if(isLive){
+    live.style.display="flex";
+    startLiveCountdown(lastOut);
+  }else{
+    const rem=Math.max(0,requiredSeconds-workedSec);
+    remaining.textContent=fmt(rem);
+    leave.textContent=rem?clock(lastOut+rem):"Completed 🎉";
+    countdown.textContent="";
+  }
+}
+
+function startLiveCountdown(lastOut){
+  timer=setInterval(()=>{
+    const now=toSec(new Date().toLocaleTimeString());
+    const liveWorked=baseWorked+(now-liveStart);
+    const rem=Math.max(0,requiredSeconds-liveWorked);
+
+    worked.textContent=fmt(liveWorked);
+    remaining.textContent=fmt(rem);
+
+    const pct=Math.min(100,liveWorked/requiredSeconds*100);
+    percent.textContent=Math.floor(pct)+"%";
+    ring.style.strokeDashoffset=ringLen-(ringLen*pct/100);
+
+    if(rem<=0){
+      leave.textContent="Completed 🎉";
+      countdown.textContent="";
+      clearInterval(timer);
+    }else{
+      const leaveAt=now+rem;
+      leave.textContent=clock(leaveAt);
+      countdown.textContent=fmt(rem);
+    }
+  },1000);
+}
+
+function add(sec,r){
+  const d=document.createElement("div");
+  d.className="block"+(r?" running":"");
+  d.style.flex=sec;
+  timeline.appendChild(d);
+}
+
+logs.addEventListener("input",calc);
+function toggleTheme(){document.body.classList.toggle("dark");}
+</script>
+</body>
+</html>
