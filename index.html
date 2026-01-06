@@ -2,292 +2,335 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
-    <title>Keka Attendance Tracker</title>
+    <title>Keka Pro Tracker</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --accent: #4f46e5;
-            --bg: #f5f7ff;
-            --card: #ffffff;
-            --text: #0f172a;
-            --muted: #64748b;
-            --border: #e5e7eb;
+            --primary: #6366f1;
+            --primary-glow: rgba(99, 102, 241, 0.4);
+            --bg-gradient: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
+            --card-bg: rgba(255, 255, 255, 0.85);
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border: rgba(255, 255, 255, 0.6);
+            --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+            --success: #10b981;
             --danger: #ef4444;
-            --success: #22c55e;
+            --warning: #f59e0b;
         }
+
         body.dark {
-            --bg: #020617;
-            --card: #0f172a;
-            --text: #e5e7eb;
-            --muted: #94a3b8;
-            --border: #1e293b;
+            --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+            --card-bg: rgba(30, 41, 59, 0.85);
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+            --border: rgba(255, 255, 255, 0.1);
+            --shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+            --primary: #818cf8;
+            --primary-glow: rgba(129, 140, 248, 0.4);
         }
-        * {
-            box-sizing: border-box;
-        }
+
+        /* Hide Scrollbars */
+        *::-webkit-scrollbar { display: none; }
+        * { -ms-overflow-style: none; scrollbar-width: none; box-sizing: border-box; }
+
         body {
             margin: 0;
-            font-family: 'Inter', sans-serif;
-            background: var(--bg);
-            color: var(--text);
+            font-family: 'Outfit', sans-serif;
+            background: var(--bg-gradient);
+            color: var(--text-main);
+            min-height: 100vh;
             display: flex;
             justify-content: center;
-            padding: 12px;
-        }
-        .app {
-            width: 100%;
-            max-width: 900px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-            border-radius: 12px;
+            align-items: center;
+            padding: 20px;
             overflow: hidden;
+            perspective: 1000px;
         }
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 18px;
-            background: var(--card);
-            padding: 15px;
-            border-radius: 12px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+
+        /* Canvas for Confetti */
+        #confetti-canvas {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 9999;
         }
-        .grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px;
-        }
-        @media (max-width: 768px) {
-            .grid {
-                grid-template-columns: 1fr;
-            }
-        }
-        .card {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 14px;
-            padding: 16px;
-            transition: transform 0.2s;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-        .card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-        }
-        .hour-chips {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 12px;
-            flex-wrap: wrap;
-        }
-        .chip {
-            padding: 8px 14px;
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 600;
-            transition: background-color 0.3s, color 0.3s;
-        }
-        .chip.active {
-            background: var(--accent);
-            color: white;
-            border-color: var(--accent);
-        }
-        textarea {
+
+        .container {
             width: 100%;
-            min-height: 250px;
-            padding: 12px;
-            border-radius: 10px;
-            border: 1px solid var(--border);
-            font-family: monospace;
-            background: transparent;
-            color: var(--text);
-            line-height: 1.5;
-            resize: none;
-        }
-        .progress-box {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-        }
-        svg {
-            width: 100px;
-            height: 100px;
-            transform: rotate(-90deg);
-        }
-        circle {
-            fill: none;
-            stroke-width: 8;
-        }
-        .bg-ring {
-            stroke: var(--border);
-        }
-        .fg-ring {
-            stroke: var(--accent);
-            stroke-linecap: round;
-            transition: stroke-dashoffset 0.4s;
-        }
-        .stats {
+            max-width: 1000px;
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin-top: 20px;
+            gap: 30px;
         }
-        .stat-card {
+
+        @media (max-width: 850px) {
+            .container { grid-template-columns: 1fr; }
+            body { overflow-y: auto; }
+        }
+
+        /* 3D Wrapper */
+        .card-wrapper {
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.1s ease-out;
+        }
+
+        .glass-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-radius: 24px;
             border: 1px solid var(--border);
-            border-radius: 10px;
-            padding: 12px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            box-shadow: var(--shadow);
+            padding: 24px;
+            position: relative;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            transform-style: preserve-3d;
         }
-        .stat-card h4 {
-            margin: 0;
-            font-size: 12px;
-            text-transform: uppercase;
-            color: var(--muted);
-        }
-        .stat-card p {
-            margin: 5px 0 0;
-            font-size: 20px;
-            font-weight: 800;
-        }
-        .leave-banner {
-            margin-top: 15px;
-            padding: 15px;
-            border-radius: 12px;
-            background: var(--accent);
-            color: white;
-            text-align: center;
-        }
-        .status-tag {
-            display: none;
-            align-items: center;
-            gap: 5px;
-            color: var(--danger);
-            font-size: 12px;
-            font-weight: bold;
-            margin-top: 5px;
-        }
-        .dot {
-            width: 8px;
-            height: 8px;
-            background: var(--danger);
-            border-radius: 50%;
-            animation: pulse 1.5s infinite;
-        }
-        @keyframes pulse {
-            0% { opacity: 1; }
-            50% { opacity: 0.3; }
-            100% { opacity: 1; }
-        }
-        .button {
-            margin-top: 10px;
-            color: var(--danger);
-            background: none;
-            border: none;
-            cursor: pointer;
-            transition: color 0.3s;
-        }
-        .button:hover {
-            color: darkred;
-        }
-        .save-load-buttons {
+
+        /* Header Area */
+        .header-row {
+            grid-column: 1 / -1;
             display: flex;
             justify-content: space-between;
-            margin-top: 10px;
+            align-items: center;
+            margin-bottom: 10px;
+            transform: translateZ(20px);
         }
-        .save-load-buttons button {
-            background: var(--accent);
+        
+        h1 { margin: 0; font-size: 24px; font-weight: 800; letter-spacing: -0.5px; }
+        .greeting { font-size: 14px; color: var(--text-muted); font-weight: 400; }
+
+        .theme-toggle {
+            background: none; border: none; font-size: 22px; cursor: pointer;
+            padding: 8px; border-radius: 50%;
+            transition: transform 0.3s;
+        }
+        .theme-toggle:hover { transform: rotate(15deg) scale(1.1); background: rgba(128,128,128,0.1); }
+
+        /* FIXED BUTTONS / CHIPS */
+        .goals-container {
+            display: flex; gap: 10px; margin-bottom: 20px;
+            position: relative;
+            z-index: 10; 
+            transform: translateZ(30px);
+        }
+        
+        .goal-chip {
+            flex: 1; text-align: center; padding: 12px;
+            border-radius: 12px; font-size: 14px; font-weight: 700;
+            cursor: pointer; border: 1px solid var(--border);
+            background: rgba(128, 128, 128, 0.1); 
+            color: var(--text-muted);
+            transition: all 0.2s;
+        }
+
+        .goal-chip:hover {
+            background: rgba(128, 128, 128, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .goal-chip.active {
+            background: var(--primary); 
             color: white;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: background-color 0.3s;
+            box-shadow: 0 4px 15px var(--primary-glow); 
+            border-color: var(--primary);
+            transform: scale(1.02);
         }
-        .save-load-buttons button:hover {
-            background: #3b3c92;
-        }
-        .daily-summary {
-            margin-top: 20px;
+
+        textarea {
+            width: 100%; height: 200px;
+            background: rgba(0,0,0,0.03);
             border: 1px solid var(--border);
-            border-radius: 10px;
-            padding: 10px;
-            background: var(--card);
+            border-radius: 16px; padding: 16px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px; color: var(--text-main);
+            resize: none; outline: none; line-height: 1.6;
+            transform: translateZ(20px);
         }
-        .toast {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: var(--success);
-            color: white;
-            padding: 10px;
-            border-radius: 5px;
-            display: none;
-            transition: opacity 0.5s;
+        body.dark textarea { background: rgba(0,0,0,0.2); }
+        textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 2px var(--primary-glow); }
+
+        .action-row { display: flex; justify-content: space-between; margin-top: 15px; align-items: center; transform: translateZ(20px); }
+        .clear-btn { color: var(--danger); font-size: 13px; font-weight: 600; cursor: pointer; background: none; border: none; padding: 0; }
+        .auto-save-indicator { font-size: 12px; color: var(--success); opacity: 0; transition: opacity 0.5s; }
+
+        /* Stats & 3D Elements */
+        .main-stat-display { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 10px 0; }
+        
+        .ring-container, .stats-grid, .leave-card, .session-list {
+            transform: translateZ(30px);
         }
+
+        .ring-container { position: relative; width: 200px; height: 200px; margin-bottom: 20px; }
+        svg { transform: rotate(-90deg); width: 100%; height: 100%; filter: drop-shadow(0 0 10px var(--primary-glow)); }
+        circle { fill: none; stroke-width: 10; stroke-linecap: round; }
+        .ring-bg { stroke: var(--text-muted); opacity: 0.1; }
+        .ring-fg { stroke: var(--primary); transition: stroke-dashoffset 0.8s cubic-bezier(0.4, 0, 0.2, 1); }
+        
+        .ring-content { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        .percentage { font-size: 42px; font-weight: 800; }
+        
+        .status-badge {
+            margin-top: 8px; padding: 4px 12px; border-radius: 20px;
+            font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;
+            display: flex; align-items: center; gap: 6px;
+        }
+        .status-badge.working { background: rgba(16, 185, 129, 0.15); color: var(--success); }
+        .status-badge.away { background: rgba(245, 158, 11, 0.15); color: var(--warning); }
+        .pulse-dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(1.4); } 100% { opacity: 1; transform: scale(1); } }
+
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; width: 100%; margin-top: 10px; }
+        .stat-box {
+            background: rgba(255,255,255,0.05); border-radius: 16px; padding: 12px;
+            text-align: center; border: 1px solid var(--border);
+        }
+        .stat-label { font-size: 10px; text-transform: uppercase; color: var(--text-muted); }
+        .stat-value { font-size: 15px; font-weight: 700; font-family: 'JetBrains Mono', monospace; margin-top: 4px; }
+
+        /* Updated Leave Card */
+        .leave-card {
+            background: var(--primary); color: white;
+            margin-top: 20px; border: none; box-shadow: 0 10px 30px -5px var(--primary-glow);
+            border-radius: 16px; padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 120px;
+        }
+        .leave-time { font-size: 36px; font-weight: 800; margin: 0; letter-spacing: -1px; line-height: 1.1; }
+        .leave-message { font-size: 14px; margin-top: 6px; font-weight: 500; opacity: 0.9; }
+
+        .session-list {
+            margin-top: 20px; max-height: 180px; overflow-y: auto;
+            border-top: 1px solid var(--border); padding-top: 15px;
+        }
+        .session-item { display: flex; justify-content: space-between; font-size: 12px; padding: 6px 0; border-bottom: 1px solid rgba(128,128,128,0.1); }
+        .session-times { font-family: 'JetBrains Mono', monospace; color: var(--text-muted); }
+        .session-duration { font-weight: 700; color: var(--primary); }
+
     </style>
 </head>
 <body>
-    <div class="app">
-        <div class="header">
-            <h2>⏱ Keka Leave Calculator</h2>
-            <button onclick="document.body.classList.toggle('dark')" style="cursor:pointer; border:none; background:none; font-size:20px">🌓</button>
+
+    <canvas id="confetti-canvas"></canvas>
+
+    <div class="container" id="container">
+        <div class="header-row">
+            <div>
+                <h1>Keka Pro <span style="font-size: 12px; vertical-align: middle; background:var(--primary); color:white; padding:2px 6px; border-radius:4px; margin-left:5px;">ULTRA</span></h1>
+                <div class="greeting" id="greeting">Good Morning! ☀️</div>
+            </div>
+            <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">🌓</button>
         </div>
 
-        <div class="grid">
-            <div class="card">
-                <div class="hour-chips" id="chips">
-                    <div class="chip active" data-sec="30600">8.5 Hours</div>
-                    <div class="chip" data-sec="27000">7.5 Hours</div>
-                    <div class="chip" data-sec="16200">4.5 Hours</div>
+        <div class="card-wrapper" id="card1">
+            <div class="glass-card">
+                <div class="goals-container" id="chips">
+                    <div class="goal-chip active" data-sec="30600">8.5 HRS</div>
+                    <div class="goal-chip" data-sec="27000">7.5 HRS</div>
+                    <div class="goal-chip" data-sec="16200">4.5 HRS</div>
                 </div>
-                <textarea id="logs" placeholder="Paste logs here...&#10;9:32:02 AM&#10;1:00:18 PM"></textarea>
-                <button class="button" onclick="clearLogs()">Clear Logs</button>
-                <div class="save-load-buttons">
-                    <button onclick="saveLogs()">Save Logs</button>
-                    <button onclick="loadLogs()">Load Logs</button>
-                </div>
-                <div class="daily-summary" id="dailySummary">
-                    <h4>Daily Summary</h4>
-                    <p><strong>Total Worked:</strong> <span id="summaryWorked">0h 0m</span></p>
-                    <p><strong>Remaining:</strong> <span id="summaryRemaining">--</span></p>
-                </div>
-            </div>
 
-            <div class="card">
-                <div class="progress-box">
-                    <svg viewBox="0 0 100 100">
-                        <circle class="bg-ring" cx="50" cy="50" r="45"/>
-                        <circle class="fg-ring" id="ring" cx="50" cy="50" r="45"/>
-                    </svg>
-                    <div>
-                        <h1 id="percent" style="margin:0">0%</h1>
-                        <div class="status-tag" id="status"><span class="dot"></span> WORKING NOW</div>
+                <textarea id="logs" placeholder="Paste Keka logs here...&#10;09:30:00 AM&#10;01:15:00 PM"></textarea>
+
+                <div class="action-row">
+                    <button class="clear-btn" onclick="clearLogs()">Clear & Reset</button>
+                    <div class="auto-save-indicator" id="saveIndicator">✓ Saved</div>
+                </div>
+
+                <div class="session-list" id="sessionList"></div>
+            </div>
+        </div>
+
+        <div class="card-wrapper" id="card2">
+            <div class="glass-card">
+                <div class="main-stat-display">
+                    <div class="ring-container">
+                        <svg viewBox="0 0 100 100">
+                            <circle class="ring-bg" cx="50" cy="50" r="44"></circle>
+                            <circle class="ring-fg" id="ring" cx="50" cy="50" r="44" stroke-dasharray="276.46" stroke-dashoffset="276.46"></circle>
+                        </svg>
+                        <div class="ring-content">
+                            <div class="percentage" id="percent">0%</div>
+                            <div class="status-badge away" id="statusBadge">
+                                <span class="pulse-dot"></span> <span id="statusText">Away</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <div class="stats">
-                    <div class="stat-card"><h4>Total Worked</h4><p id="worked">0h 0m</p></div>
-                    <div class="stat-card"><h4>Remaining</h4><p id="remaining">--</p></div>
+                <div class="stats-grid">
+                    <div class="stat-box">
+                        <div class="stat-label">Total Worked</div>
+                        <div class="stat-value" id="worked">0h 0m</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Remaining</div>
+                        <div class="stat-value" id="remainingTime">0h 0m</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Total Break</div>
+                        <div class="stat-value" id="breakTime">0h 0m</div>
+                    </div>
                 </div>
 
-                <div class="leave-banner">
-                    <small>Estimated Departure</small>
-                    <h2 id="leave" style="margin:5px 0 0">--:--</h2>
+                <div class="glass-card leave-card">
+                    <div class="stat-label" id="leaveLabel" style="color: rgba(255,255,255,0.8);">Estimated Departure</div>
+                    <div class="leave-time" id="leave">--:--</div>
+                    <div class="leave-message" id="leaveMessage">Be on time!</div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="toast" id="toast">Action performed successfully!</div>
-
     <script>
+        // --- 3D TILT LOGIC ---
+        const container = document.getElementById('container');
+        const cards = [document.getElementById('card1'), document.getElementById('card2')];
+
+        if (window.matchMedia("(pointer: fine)").matches) {
+            container.addEventListener('mousemove', (e) => {
+                const xAxis = (window.innerWidth / 2 - e.pageX) / 45;
+                const yAxis = (window.innerHeight / 2 - e.pageY) / 45;
+                
+                cards.forEach(card => {
+                    card.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
+                });
+            });
+
+            container.addEventListener('mouseleave', () => {
+                cards.forEach(card => {
+                    card.style.transform = `rotateY(0deg) rotateX(0deg)`;
+                });
+            });
+        }
+
+        // --- CORE LOGIC ---
         const logsArea = document.getElementById('logs');
         const ring = document.getElementById('ring');
-        const circumference = 2 * Math.PI * 45;
-        ring.style.strokeDasharray = circumference;
-
+        const sessionList = document.getElementById('sessionList');
+        const statusBadge = document.getElementById('statusBadge');
+        const statusText = document.getElementById('statusText');
+        const saveIndicator = document.getElementById('saveIndicator');
+        const confettiCanvas = document.getElementById('confetti-canvas');
+        const ctx = confettiCanvas.getContext('2d');
+        
+        const circumference = 2 * Math.PI * 44; 
         let goalSeconds = 30600;
+        let notificationSent = false;
+        let confettiTriggered = false;
+
+        confettiCanvas.width = window.innerWidth;
+        confettiCanvas.height = window.innerHeight;
+        window.addEventListener('resize', () => {
+            confettiCanvas.width = window.innerWidth;
+            confettiCanvas.height = window.innerHeight;
+        });
 
         function parseTimeToSeconds(str) {
             if (!str) return null;
@@ -306,104 +349,199 @@
             return (hours * 3600) + (mins * 60) + secs;
         }
 
-        function update() {
-            const lines = logsArea.value.split('\n').filter(l => l.trim() !== '');
-            let totalWorked = 0;
-            let isWorking = false;
-
-            for (let i = 0; i < lines.length; i += 2) {
-                const start = parseTimeToSeconds(lines[i]);
-                if (start === null) continue;
-
-                if (lines[i + 1]) {
-                    let end = parseTimeToSeconds(lines[i + 1]);
-                    if (end < start) end += 86400; // Handle shifts past midnight
-                    totalWorked += (end - start);
-                } else {
-                    const now = new Date();
-                    let currentSecs = (now.getHours() * 3600) + (now.getMinutes() * 60) + now.getSeconds();
-                    if (currentSecs < start) currentSecs += 86400;
-                    totalWorked += (currentSecs - start);
-                    isWorking = true;
-                }
-            }
-
-            const progress = Math.min(totalWorked / goalSeconds, 1);
-            const offset = circumference - (progress * circumference);
-            ring.style.strokeDashoffset = offset;
-
-            document.getElementById('percent').innerText = Math.floor(progress * 100) + '%';
-            document.getElementById('worked').innerText = formatDuration(totalWorked);
-            document.getElementById('status').style.display = isWorking ? 'flex' : 'none';
-
-            if (totalWorked >= goalSeconds) {
-                document.getElementById('remaining').innerText = "Done";
-                document.getElementById('leave').innerText = "Completed!";
-            } else {
-                const remaining = goalSeconds - totalWorked;
-                document.getElementById('remaining').innerText = formatDuration(remaining);
-                const leaveTime = new Date(Date.now() + remaining * 1000);
-                document.getElementById('leave').innerText = leaveTime.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-            }
-
-            // Update daily summary
-            document.getElementById('summaryWorked').innerText = formatDuration(totalWorked);
-            document.getElementById('summaryRemaining').innerText = formatDuration(Math.max(0, goalSeconds - totalWorked));
-        }
-
         function formatDuration(s) {
             const h = Math.floor(s / 3600);
             const m = Math.floor((s % 3600) / 60);
             return `${h}h ${m}m`;
         }
 
-        function clearLogs() {
-            logsArea.value = '';
-            update();
+        // --- Confetti Engine ---
+        let particles = [];
+        function createParticle() {
+            return {
+                x: Math.random() * confettiCanvas.width,
+                y: -10,
+                color: ['#6366f1', '#10b981', '#f59e0b', '#ef4444'][Math.floor(Math.random() * 4)],
+                size: Math.random() * 7 + 3,
+                speedY: Math.random() * 3 + 2,
+                speedX: Math.random() * 4 - 2,
+                rotation: Math.random() * 360,
+                rotationSpeed: Math.random() * 10 - 5
+            };
         }
 
-        function showToast(message) {
-            const toast = document.getElementById('toast');
-            toast.innerText = message;
-            toast.style.display = 'block';
-            setTimeout(() => {
-                toast.style.opacity = '0';
-                setTimeout(() => {
-                    toast.style.display = 'none';
-                    toast.style.opacity = '1';
-                }, 500);
-            }, 2000);
-        }
+        function updateConfetti() {
+            if (particles.length === 0 && !confettiTriggered) return;
+            ctx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+            
+            if (confettiTriggered && particles.length < 150) {
+                particles.push(createParticle());
+            }
 
-        function saveLogs() {
-            const logs = logsArea.value;
-            localStorage.setItem('kekaLogs', logs);
-            showToast('Logs saved successfully!');
-        }
+            particles.forEach((p, index) => {
+                p.y += p.speedY;
+                p.x += p.speedX;
+                p.rotation += p.rotationSpeed;
+                
+                ctx.save();
+                ctx.translate(p.x, p.y);
+                ctx.rotate(p.rotation * Math.PI / 180);
+                ctx.fillStyle = p.color;
+                ctx.fillRect(-p.size/2, -p.size/2, p.size, p.size);
+                ctx.restore();
 
-        function loadLogs() {
-            const savedLogs = localStorage.getItem('kekaLogs');
-            if (savedLogs) {
-                logsArea.value = savedLogs;
-                update();
-                showToast('Logs loaded successfully!');
-            } else {
-                alert('No saved logs found.');
+                if (p.y > confettiCanvas.height) particles.splice(index, 1);
+            });
+
+            if (particles.length > 0 || confettiTriggered) {
+                requestAnimationFrame(updateConfetti);
             }
         }
 
+        function triggerConfetti() {
+            if (!confettiTriggered) {
+                confettiTriggered = true;
+                updateConfetti();
+                setTimeout(() => { confettiTriggered = false; }, 3000);
+            }
+        }
+
+        // --- Update Loop ---
+        function update() {
+            const lines = logsArea.value.split('\n').filter(l => l.trim() !== '');
+            let totalWorked = 0;
+            let totalBreak = 0; 
+            let isWorking = false;
+            let sessionHtml = '';
+            
+            let lastOutTimestamp = null;
+
+            for (let i = 0; i < lines.length; i += 2) {
+                const start = parseTimeToSeconds(lines[i]);
+                if (start === null) continue;
+                
+                if (lastOutTimestamp !== null) {
+                    let breakDuration = start - lastOutTimestamp;
+                    if (breakDuration < 0) breakDuration += 86400; 
+                    totalBreak += breakDuration;
+                }
+
+                let duration = 0;
+                let endStr = "Working...";
+                let currentOutTimestamp = null;
+
+                if (lines[i + 1]) {
+                    let end = parseTimeToSeconds(lines[i + 1]);
+                    if (end < start) end += 86400; 
+                    duration = end - start;
+                    totalWorked += duration;
+                    endStr = lines[i+1].trim(); 
+                    currentOutTimestamp = end; 
+                } else {
+                    const now = new Date();
+                    let currentSecs = (now.getHours() * 3600) + (now.getMinutes() * 60) + now.getSeconds();
+                    if (currentSecs < start) currentSecs += 86400;
+                    duration = currentSecs - start;
+                    totalWorked += duration;
+                    isWorking = true;
+                }
+                
+                lastOutTimestamp = currentOutTimestamp;
+                sessionHtml += `<div class="session-item"><div class="session-times">${lines[i].trim().split(' ')[0]} - ${endStr.split(' ')[0]}</div><div class="session-duration">+ ${formatDuration(duration)}</div></div>`;
+            }
+
+            const progress = Math.min(totalWorked / goalSeconds, 1);
+            const offset = circumference - (progress * circumference);
+            ring.style.strokeDashoffset = offset;
+            document.getElementById('percent').innerText = Math.floor(progress * 100) + '%';
+
+            document.getElementById('worked').innerText = formatDuration(totalWorked);
+            document.getElementById('breakTime').innerText = formatDuration(totalBreak);
+
+            if (isWorking) {
+                statusBadge.className = 'status-badge working';
+                statusText.innerText = "Active";
+            } else {
+                statusBadge.className = 'status-badge away';
+                statusText.innerText = "Away";
+            }
+
+            const remainingSeconds = Math.max(0, goalSeconds - totalWorked);
+            document.getElementById('remainingTime').innerText = formatDuration(remainingSeconds);
+
+            // Dynamic Title & Logic
+            if (totalWorked >= goalSeconds) {
+                document.title = "🎉 GOAL REACHED! - Keka Pro";
+                
+                // Update Leave Card for "Done" state
+                document.getElementById('leaveLabel').innerText = "Status";
+                document.getElementById('leave').innerText = "Done!";
+                document.getElementById('leaveMessage').innerText = "Enjoy your day! 🚀";
+                document.querySelector('.leave-card').style.background = "#10b981";
+                
+                if (!notificationSent) {
+                    new Notification("Target Destroyed!", { body: "You have completed your hours. Time to fly!" });
+                    notificationSent = true;
+                    triggerConfetti();
+                }
+            } else {
+                document.title = `(${formatDuration(remainingSeconds)}) Keka Pro`;
+                const leaveTime = new Date(Date.now() + remainingSeconds * 1000);
+                
+                // Update Leave Card for "Working" state
+                document.getElementById('leaveLabel').innerText = "Estimated Departure";
+                document.getElementById('leave').innerText = leaveTime.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                document.getElementById('leaveMessage').innerText = "Keep it up!";
+                document.querySelector('.leave-card').style.background = "var(--primary)";
+                notificationSent = false;
+            }
+
+            sessionList.innerHTML = sessionHtml || '<div style="text-align:center; color:var(--text-muted); font-size:12px; margin-top:10px">Ready for logs...</div>';
+            localStorage.setItem('kekaLogs', logsArea.value);
+        }
+
+        // --- Event Listeners ---
+        function handleInput() { update(); saveIndicator.style.opacity = '1'; setTimeout(() => { saveIndicator.style.opacity = '0'; }, 1000); }
+        function clearLogs() { logsArea.value = ''; notificationSent = false; handleInput(); }
+
+        // Fixed Click Logic for Chips
         document.getElementById('chips').addEventListener('click', (e) => {
-            if (e.target.classList.contains('chip')) {
-                document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
-                e.target.classList.add('active');
-                goalSeconds = parseInt(e.target.dataset.sec);
+            const chip = e.target.closest('.goal-chip');
+            if (chip) {
+                document.querySelectorAll('.goal-chip').forEach(c => c.classList.remove('active'));
+                chip.classList.add('active');
+                goalSeconds = parseInt(chip.dataset.sec);
+                notificationSent = false;
                 update();
             }
         });
 
-        logsArea.addEventListener('input', update);
-        setInterval(update, 1000); // Live update for "Working" status
-        update();
+        function toggleTheme() {
+            document.body.classList.toggle('dark');
+            localStorage.setItem('theme', document.body.classList.contains('dark') ? 'dark' : 'light');
+        }
+
+        // UPDATED: Professional & Inclusive Greeting
+        function setGreeting() {
+            const hour = new Date().getHours();
+            const text = document.getElementById('greeting');
+            if (hour < 12) text.innerText = "Good Morning! ☀️";
+            else if (hour < 17) text.innerText = "Good Afternoon! 🌤️";
+            else text.innerText = "Good Evening! 🌙";
+        }
+
+        document.body.addEventListener('click', () => { if (Notification.permission !== "granted") Notification.requestPermission(); }, { once: true });
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedLogs = localStorage.getItem('kekaLogs');
+            if (savedLogs) logsArea.value = savedLogs;
+            if (localStorage.getItem('theme') === 'dark') document.body.classList.add('dark');
+            setGreeting();
+            update();
+            setInterval(update, 1000);
+        });
+
+        logsArea.addEventListener('input', handleInput);
     </script>
 </body>
 </html>
