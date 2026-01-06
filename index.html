@@ -1,11 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
+<meta charset="UTF-8" />
 <title>Keka Leave Time</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 
-<!-- DYNAMIC FAVICON -->
 <link id="favicon" rel="icon" type="image/svg+xml">
 
 <style>
@@ -29,64 +28,69 @@ body.dark{
 *{box-sizing:border-box}
 body{
   margin:0;
-  font-family:Inter,Segoe UI,Arial;
+  font-family:Inter,Segoe UI,Arial, sans-serif;
   background:var(--bg);
   color:var(--text);
   min-height:100vh;
   display:flex;
   justify-content:center;
+  padding:12px;
 }
 
 .app{
   width:100%;
-  max-width:1200px;
-  padding:24px;
+  max-width:900px;
+  padding:12px;
 }
 
-header{
+.header{
   display:flex;
   justify-content:space-between;
   align-items:center;
-  margin-bottom:24px;
+  margin-bottom:18px;
 }
-header h1{margin:0;font-size:26px;font-weight:900}
-header span{font-size:13px;color:var(--muted)}
+.header-left{display:flex;gap:12px;align-items:center}
+.header h1{margin:0;font-size:22px;font-weight:900}
+.header span{font-size:13px;color:var(--muted)}
 .icon-btn{
   border:1px solid var(--border);
   background:var(--card);
-  border-radius:12px;
-  padding:10px 12px;
+  border-radius:10px;
+  padding:8px 10px;
   cursor:pointer;
 }
+#notifyBtn{border-radius:8px;padding:8px 10px;border:1px solid var(--border);background:transparent;cursor:pointer;font-weight:700}
 
+/* layout */
 .grid{
   display:grid;
   grid-template-columns:1fr 1fr;
-  gap:24px;
+  gap:16px;
 }
 @media(max-width:900px){
   .grid{grid-template-columns:1fr}
 }
-
 .card{
   background:var(--card);
   border:1px solid var(--border);
-  border-radius:20px;
-  padding:20px;
+  border-radius:14px;
+  padding:16px;
 }
 
 .hours{
   display:grid;
   grid-template-columns:repeat(3,1fr);
-  gap:14px;
-  margin-bottom:18px;
+  gap:10px;
+  margin-bottom:12px;
 }
 .hour{
   border:2px solid var(--border);
-  border-radius:16px;
-  padding:16px;
+  border-radius:12px;
+  padding:10px;
   text-align:center;
   cursor:pointer;
+  user-select:none;
+  font-weight:700;
 }
 .hour.active{
   background:linear-gradient(135deg,var(--accent),#6366f1);
@@ -96,291 +100,423 @@ header span{font-size:13px;color:var(--muted)}
 
 textarea{
   width:100%;
-  height:200px;
-  padding:14px;
-  border-radius:14px;
+  min-height:220px;
+  padding:12px;
+  border-radius:10px;
   border:1px solid var(--border);
   font-family:monospace;
   background:transparent;
   color:var(--text);
+  resize:vertical;
 }
 
 .progress{
   display:flex;
   align-items:center;
-  gap:22px;
+  gap:16px;
 }
-svg{width:140px;height:140px}
-circle{
-  fill:none;
-  stroke-width:12;
-  transform:rotate(-90deg);
-  transform-origin:50% 50%;
-}
-.bg{stroke:#e5e7eb}
-.fg{
-  stroke:var(--accent);
-  stroke-linecap:round;
-  transition:.2s;
-}
+svg{width:120px;height:120px; display:block}
+circle{fill:none;stroke-width:12;vector-effect: non-scaling-stroke}
+.bg{stroke:#e5e7eb;stroke-linecap:butt}
+.fg{stroke:var(--accent);stroke-linecap:round;transition:stroke-dashoffset .25s linear}
 
-.live{
-  display:flex;
-  align-items:center;
-  gap:8px;
-  color:var(--danger);
-  font-weight:700;
-  font-size:13px;
-}
-.dot{
-  width:10px;height:10px;
-  background:var(--danger);
-  border-radius:50%;
-  animation:pulse 1.5s infinite;
-}
+.live{display:flex;align-items:center;gap:8px;color:var(--danger);font-weight:700;font-size:13px}
+.dot{width:10px;height:10px;background:var(--danger);border-radius:50%;animation:pulse 1.5s infinite}
 
-.stats{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:14px;
-  margin-top:18px;
-}
-.stat{
-  border:1px solid var(--border);
-  border-radius:16px;
-  padding:14px;
-}
-.stat h4{margin:0;font-size:13px;color:var(--muted)}
-.stat p{margin:6px 0 0;font-size:18px;font-weight:800}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+.stat{border:1px solid var(--border);border-radius:10px;padding:10px}
+.stat h4{margin:0;font-size:12px;color:var(--muted)}
+.stat p{margin:6px 0 0;font-size:16px;font-weight:800}
 
-.leave{
-  margin-top:24px;
-  padding:24px;
-  border-radius:22px;
-  background:linear-gradient(135deg,var(--accent),#6366f1);
-  color:#fff;
-  text-align:center;
-}
-.leave h2{margin:0;font-size:34px;font-weight:900}
-.leave span{font-size:14px;opacity:.9}
+.leave{margin-top:12px;padding:12px;border-radius:12px;background:linear-gradient(135deg,var(--accent),#6366f1);color:#fff;text-align:center}
+.leave h2{margin:0;font-size:22px;font-weight:900}
+.leave span{font-size:13px;opacity:.95}
 
-.timeline{margin-top:24px}
-.bar{
-  display:flex;
-  height:26px;
-  border-radius:13px;
-  overflow:hidden;
-  background:#e5e7eb;
-}
-.block{background:var(--accent);margin-right:2px}
-.block.running{
-  background:var(--danger);
-  animation:pulse 1.5s infinite;
-}
+/* small utility area */
+.tools{margin-top:14px;display:flex;gap:10px;flex-wrap:wrap}
+.btn{padding:8px 12px;border-radius:8px;border:1px solid var(--border);background:var(--card);cursor:pointer}
+.btn.primary{background:linear-gradient(135deg,var(--accent),#6366f1);color:#fff;border:none}
 
-@keyframes pulse{
-  0%{opacity:.6}
-  50%{opacity:1}
-  100%{opacity:.6}
-}
+/* removed timeline CSS (work session UI) - that entire section was removed per request */
+
+@keyframes pulse{0%{opacity:.6}50%{opacity:1}100%{opacity:.6}}
 </style>
 </head>
-
 <body>
 <div class="app">
 
-<header>
-  <div>
-    <h1>⏱ Keka Leave Time</h1>
-    <span>Paste logs → live calculation</span>
+  <div class="header">
+    <div class="header-left">
+      <div>
+        <h1>⏱ Keka Leave Time</h1>
+        <div style="font-size:13px;color:var(--muted)">Paste logs → live calculation</div>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;align-items:center">
+      <button id="notifyBtn" onclick="requestNotificationPermission()">Enable notifications</button>
+      <button class="icon-btn" onclick="toggleTheme()">🌙</button>
+    </div>
   </div>
-  <button class="icon-btn" onclick="toggleTheme()">🌙</button>
-</header>
 
-<div class="grid">
+  <div class="grid">
 
-<div class="card">
-  <div class="hours">
-    <div class="hour active" data-sec="30600">8.5 Hours</div>
-    <div class="hour" data-sec="27000">7.5 Hours</div>
-    <div class="hour" data-sec="16200">4.5 Hours</div>
-  </div>
-  <textarea id="logs" placeholder="Paste Keka logs here…"></textarea>
-</div>
+    <div class="card">
+      <div class="hours">
+        <div class="hour active" data-sec="30600">8.5 Hours</div>
+        <div class="hour" data-sec="27000">7.5 Hours</div>
+        <div class="hour" data-sec="16200">4.5 Hours</div>
+      </div>
 
-<div class="card">
-  <div class="progress">
-    <svg viewBox="0 0 100 100">
-      <circle class="bg" cx="50" cy="50" r="45"/>
-      <circle class="fg" cx="50" cy="50" r="45"
-              stroke-dasharray="283"
-              stroke-dashoffset="283"
-              id="ring"/>
-    </svg>
-    <div>
-      <div style="font-size:28px;font-weight:900" id="percent">0%</div>
-      <div class="live" id="live" style="display:none">
-        <span class="dot"></span> Working now
+      <textarea id="logs" placeholder="Paste Keka logs here… (one time per line: start, end, start, end — leave last end empty for running)"></textarea>
+
+      <div class="tools">
+        <button class="btn" id="clearBtn">Clear logs</button>
+        <button class="btn" id="copySummaryBtn">Copy summary</button>
+        <button class="btn primary" id="exportCsvBtn">Export summary CSV</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="progress" style="align-items:center">
+        <svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+          <circle class="bg" cx="50" cy="50" r="45" transform="rotate(-90 50 50)"/>
+          <circle class="fg" cx="50" cy="50" r="45" id="ring" transform="rotate(-90 50 50)"/>
+        </svg>
+
+        <div>
+          <div style="font-size:22px;font-weight:900" id="percent">0%</div>
+          <div class="live" id="live" style="display:none"><span class="dot"></span> Working now</div>
+        </div>
+      </div>
+
+      <div class="stats">
+        <div class="stat"><h4>Total Worked</h4><p id="worked">–</p></div>
+        <div class="stat"><h4>Remaining</h4><p id="remaining">–</p></div>
+      </div>
+
+      <div class="leave">
+        <span id="leaveLabel">Leave At</span>
+        <h2 id="leave">–</h2>
+        <div id="countdown" style="font-size:13px;opacity:0.9"></div>
       </div>
     </div>
   </div>
 
-  <div class="stats">
-    <div class="stat">
-      <h4>Total Worked</h4>
-      <p id="worked">–</p>
-    </div>
-    <div class="stat">
-      <h4>Remaining</h4>
-      <p id="remaining">–</p>
-    </div>
-  </div>
-
-  <div class="leave">
-    <span>Leave At</span>
-    <h2 id="leave">–</h2>
-    <span id="countdown"></span>
-  </div>
-</div>
-
-</div>
-
-<div class="card timeline">
-  <h4>📊 Work Sessions</h4>
-  <div class="bar" id="timeline"></div>
-</div>
-
 </div>
 
 <script>
-const ringLen=283;
-let requiredSeconds=30600;
-let timer=null;
-let liveStart=0;
-let baseWorked=0;
+/* ---------------- Element refs ---------------- */
+const favicon = document.getElementById('favicon');
+const ringEl = document.getElementById('ring');
+const logsEl = document.getElementById('logs');
+const percentEl = document.getElementById('percent');
+const workedEl = document.getElementById('worked');
+const remainingEl = document.getElementById('remaining');
+const liveEl = document.getElementById('live');
+const leaveEl = document.getElementById('leave');
+const leaveLabel = document.getElementById('leaveLabel');
+const countdownEl = document.getElementById('countdown');
 
-/* ---------- FAVICON ---------- */
-function setFavicon(state, percent=0){
-  let bg="#4f46e5", icon="⏱";
-  if(state==="working") bg="#ef4444";
-  if(state==="done"){ bg="#22c55e"; icon="✔"; }
+const notifyBtn = document.getElementById('notifyBtn');
+const clearBtn = document.getElementById('clearBtn');
+const copySummaryBtn = document.getElementById('copySummaryBtn');
+const exportCsvBtn = document.getElementById('exportCsvBtn');
 
-  const r=40, c=2*Math.PI*r;
-  const dash=c*percent/100;
+let requiredSeconds = 30600; // 8.5h default
+let timer = null;
+let liveStart = 0;
+let baseWorked = 0;
+let ringLen = 0;
 
-  const svg=`
-  <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'>
-    <rect width='100' height='100' rx='20' fill='${bg}'/>
-    ${state!=="done"?`
-    <circle cx='50' cy='50' r='${r}' fill='none'
-      stroke='white' stroke-width='8' opacity='.25'/>
-    <circle cx='50' cy='50' r='${r}' fill='none'
-      stroke='white' stroke-width='8'
-      stroke-dasharray='${c}'
-      stroke-dashoffset='${c-dash}'
-      transform='rotate(-90 50 50)'/>`:``}
-    <text x='50' y='68' text-anchor='middle'
-      font-size='44' fill='white'>${icon}</text>
-  </svg>`;
-  favicon.href="data:image/svg+xml,"+encodeURIComponent(svg);
+/* notification flags */
+let notifiedTen = false;
+let notifiedDone = false;
+const TEN_SECONDS = 10 * 60;
+
+/* ---------------- Helpers ---------------- */
+function toSec(t){
+  if (typeof t === 'number') return Math.floor(t);
+  const s = ('' + t).trim();
+  const m = s.match(/^(\d{1,2}):(\d{2})(?::(\d{2}))?\s*(AM|PM|am|pm)?$/);
+  if(m){
+    let hh = parseInt(m[1],10);
+    const mm = parseInt(m[2],10);
+    const ss = m[3] ? parseInt(m[3],10) : 0;
+    const ampm = m[4];
+    if(ampm){
+      const a = ampm.toLowerCase();
+      if(a === 'pm' && hh < 12) hh += 12;
+      if(a === 'am' && hh === 12) hh = 0;
+    }
+    hh = hh % 24;
+    return hh * 3600 + mm * 60 + ss;
+  }
+  let d = new Date('1970-01-01T' + s);
+  if(!isNaN(d)) return d.getHours()*3600 + d.getMinutes()*60 + d.getSeconds();
+  d = new Date('1970-01-01 ' + s);
+  if(!isNaN(d)) return d.getHours()*3600 + d.getMinutes()*60 + d.getSeconds();
+  return 0;
+}
+function fmt(s){
+  s = Math.max(0, Math.floor(s));
+  return `${Math.floor(s/3600)}h ${Math.floor(s%3600/60)}m ${s%60}s`;
+}
+function clock(s){
+  const date = new Date(1970,0,1,0,0,0);
+  date.setSeconds(s);
+  return date.toLocaleTimeString();
 }
 
-const toSec=t=>{
-  const d=new Date("1970-01-01 "+t);
-  return d.getHours()*3600+d.getMinutes()*60+d.getSeconds();
-};
-const fmt=s=>`${Math.floor(s/3600)}h ${Math.floor(s%3600/60)}m ${s%60}s`;
-const clock=s=>new Date(1970,0,1,0,0,s).toLocaleTimeString();
+/* ---------------- Favicon ---------------- */
+function setFavicon(state, percentVal = 0){
+  let bg = "#4f46e5", icon = "⏱";
+  if(state === "working") bg = "#ef4444";
+  if(state === "done"){ bg = "#22c55e"; icon = "✔"; }
+  const r = 40, c = 2 * Math.PI * r;
+  const dash = c * percentVal / 100;
+  const svg = `
+  <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'>
+    <rect width='100' height='100' rx='20' fill='${bg}'/>
+    ${state !== "done" ? `
+      <circle cx='50' cy='50' r='${r}' fill='none' stroke='white' stroke-width='8' opacity='.25'/>
+      <circle cx='50' cy='50' r='${r}' fill='none' stroke='white' stroke-width='8'
+        stroke-dasharray='${c}' stroke-dashoffset='${c-dash}' transform='rotate(-90 50 50)'/>` : ``}
+    <text x='50' y='68' text-anchor='middle' font-size='44' fill='white'>${icon}</text>
+  </svg>`;
+  favicon.href = "data:image/svg+xml," + encodeURIComponent(svg);
+}
 
-document.querySelectorAll(".hour").forEach(h=>{
-  h.onclick=()=>{
-    document.querySelectorAll(".hour").forEach(x=>x.classList.remove("active"));
-    h.classList.add("active");
-    requiredSeconds=+h.dataset.sec;
-    calc();
-  };
-});
+/* ---------- Notifications (browser-only, no sound) ---------- */
+async function requestNotificationPermission(){
+  if(!('Notification' in window)){ alert('Notifications not supported in this browser.'); return; }
+  if(Notification.permission === 'granted'){ notifyBtn.textContent = 'Notifications enabled'; notifyBtn.disabled = true; return; }
+  const p = await Notification.requestPermission();
+  if(p === 'granted'){ notifyBtn.textContent = 'Notifications enabled'; notifyBtn.disabled = true; }
+  else { alert('Notification permission denied. Please enable in browser settings if you want system notifications.'); }
+}
+async function notify(title, body){
+  if(!('Notification' in window)) return;
+  if(Notification.permission === 'granted'){
+    try{ new Notification(title, { body, icon: favicon.href }); }catch(e){}
+  }else{
+    // do nothing (no fallback alert as per request)
+    console.warn('Notification suppressed - permission not granted');
+  }
+}
 
+/* ---------- Ring init ---------- */
+function initRing(){
+  try{
+    ringLen = ringEl.getTotalLength();
+    ringEl.style.strokeDasharray = ringLen + ' ' + ringLen;
+    ringEl.style.strokeDashoffset = ringLen;
+  }catch(e){
+    const r = Number(ringEl.getAttribute('r')) || 45;
+    ringLen = 2 * Math.PI * r;
+    ringEl.style.strokeDasharray = ringLen + ' ' + ringLen;
+    ringEl.style.strokeDashoffset = ringLen;
+  }
+}
+
+/* ---------- Sessions parsing for export/summary (kept minimal now) ---------- */
+function parseSessions(lines){
+  const sessions = [];
+  for(let i=0;i<lines.length;i+=2){
+    const a = toSec(lines[i]);
+    if(lines[i+1]){
+      const b = toSec(lines[i+1]);
+      sessions.push({start:a, end: Math.max(a,b), duration: Math.max(0, Math.max(a,b)-a)});
+    }else{
+      const now = toSec(new Date().toLocaleTimeString());
+      sessions.push({start:a, end: now, duration: Math.max(0, now - a), running: true});
+    }
+  }
+  return sessions;
+}
+
+/* ---------- Export CSV ---------- */
+function exportCSV(){
+  const lines = logsEl.value.split('\n').map(x=>x.trim()).filter(x=>x && x!=='MISSING');
+  if(!lines.length){ alert('No logs to export'); return; }
+  const sessions = parseSessions(lines);
+  const rows = [['start','end','duration_seconds','duration_human']];
+  sessions.forEach(s => {
+    rows.push([secToClock(s.start), secToClock(s.end), s.duration, fmt(s.duration)]);
+  });
+  const csv = rows.map(r => r.map(cell => '"' + String(cell).replace(/"/g,'""') + '"').join(',')).join('\n');
+  const blob = new Blob([csv], {type: 'text/csv;charset=utf-8;'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `keka-summary-${new Date().toISOString().slice(0,10)}.csv`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+}
+
+/* ---------- Copy summary to clipboard ---------- */
+async function copySummary(){
+  const lines = logsEl.value.split('\n').map(x=>x.trim()).filter(x=>x && x!=='MISSING');
+  if(!lines.length){ alert('No logs to summarise'); return; }
+  const sessions = parseSessions(lines);
+  const total = sessions.reduce((s, it) => s + (it.duration||0), 0);
+  let text = `Total Worked: ${fmt(total)}\nSessions: ${sessions.length}\n\n`;
+  sessions.forEach((s,i)=>{
+    text += `${i+1}. ${secToClock(s.start)} → ${secToClock(s.end)} (${fmt(s.duration)})\n`;
+  });
+  try{
+    await navigator.clipboard.writeText(text);
+    alert('Summary copied to clipboard');
+  }catch(e){
+    // fallback
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    ta.remove();
+    alert('Summary copied to clipboard (fallback)');
+  }
+}
+
+/* ---------- Utility: time formatting for CSV/summary ---------- */
+function secToClock(s){
+  const d = new Date(1970,0,1,0,0,0);
+  d.setSeconds(s||0);
+  return d.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit', second: undefined});
+}
+
+/* ---------- Core calc & live updates ---------- */
 function calc(){
   clearInterval(timer);
-  timeline.innerHTML="";
-  live.style.display="none";
+  timer = null;
+  notifiedTen = false;
+  notifiedDone = false;
 
-  const lines=logs.value.split("\n").map(x=>x.trim()).filter(x=>x&&x!=="MISSING");
+  const lines = logsEl.value.split('\n').map(x=>x.trim()).filter(x=>x && x!=='MISSING');
   if(!lines.length){
-    setFavicon("idle",0);
+    setFavicon('idle', 0);
+    percentEl.textContent = '0%';
+    workedEl.textContent = '–';
+    remainingEl.textContent = '–';
+    leaveEl.textContent = '–';
+    leaveLabel.style.display = '';
+    countdownEl.style.display = '';
     return;
   }
 
-  let workedSec=0,isLive=false;
+  let workedSec = 0;
+  let isLive = false;
 
   for(let i=0;i<lines.length;i+=2){
-    const a=toSec(lines[i]);
+    const a = toSec(lines[i]);
     if(lines[i+1]){
-      const b=toSec(lines[i+1]);
-      workedSec+=b-a;
-      add(b-a,false);
+      const b = toSec(lines[i+1]);
+      if(b >= a) workedSec += b - a;
     }else{
-      isLive=true;
-      liveStart=a;
-      baseWorked=workedSec;
-      add(toSec(new Date().toLocaleTimeString())-a,true);
+      isLive = true;
+      liveStart = a;
+      baseWorked = workedSec;
     }
   }
 
-  updateUI(workedSec,isLive);
+  updateUI(workedSec, isLive);
 }
 
-function updateUI(workedSec,isLive){
-  const pct=Math.min(100,workedSec/requiredSeconds*100);
-  percent.textContent=Math.floor(pct)+"%";
-  ring.style.strokeDashoffset=ringLen-(ringLen*pct/100);
-  worked.textContent=fmt(workedSec);
+function updateUI(workedSec, isLive){
+  const pct = Math.min(100, workedSec / requiredSeconds * 100);
+  percentEl.textContent = Math.floor(pct) + '%';
+  if(ringLen) ringEl.style.strokeDashoffset = ringLen - (ringLen * pct / 100);
+  workedEl.textContent = fmt(workedSec);
 
   if(isLive){
-    live.style.display="flex";
-    setFavicon("working",pct);
+    liveEl.style.display = 'flex';
+    leaveLabel.style.display = '';
+    countdownEl.style.display = '';
+    setFavicon('working', pct);
     startLive();
   }else{
-    const rem=Math.max(0,requiredSeconds-workedSec);
-    remaining.textContent=fmt(rem);
-    leave.textContent=rem?clock(toSec(new Date().toLocaleTimeString())+rem):"Completed 🎉";
-    setFavicon(rem? "idle":"done",pct);
+    const rem = Math.max(0, requiredSeconds - workedSec);
+    remainingEl.textContent = fmt(rem);
+
+    if(rem <= 0){
+      leaveLabel.style.display = 'none';
+      countdownEl.style.display = 'none';
+      leaveEl.textContent = 'Completed 🎉';
+      setFavicon('done', pct);
+      if(!notifiedDone){ notifiedDone = true; notify('Work completed', "You've completed your required hours. 🎉"); }
+    }else{
+      leaveLabel.style.display = '';
+      countdownEl.style.display = '';
+      leaveEl.textContent = clock(toSec(new Date().toLocaleTimeString()) + rem);
+      setFavicon('idle', pct);
+      if(rem <= TEN_SECONDS && !notifiedTen){ notifiedTen = true; notify('10 minutes remaining', `Only ${Math.ceil(rem/60)} minute(s) left.`); }
+    }
   }
 }
 
 function startLive(){
-  timer=setInterval(()=>{
-    const now=toSec(new Date().toLocaleTimeString());
-    const liveWorked=baseWorked+(now-liveStart);
-    const rem=Math.max(0,requiredSeconds-liveWorked);
-    const pct=Math.min(100,liveWorked/requiredSeconds*100);
+  clearInterval(timer);
+  function tick(){
+    const now = toSec(new Date().toLocaleTimeString());
+    const liveWorked = baseWorked + Math.max(0, now - liveStart);
+    const rem = Math.max(0, requiredSeconds - liveWorked);
+    const pct = Math.min(100, liveWorked / requiredSeconds * 100);
 
-    worked.textContent=fmt(liveWorked);
-    remaining.textContent=fmt(rem);
-    percent.textContent=Math.floor(pct)+"%";
-    ring.style.strokeDashoffset=ringLen-(ringLen*pct/100);
-    setFavicon(rem>0?"working":"done",pct);
+    workedEl.textContent = fmt(liveWorked);
+    remainingEl.textContent = fmt(rem);
+    percentEl.textContent = Math.floor(pct) + '%';
+    if(ringLen) ringEl.style.strokeDashoffset = ringLen - (ringLen * pct / 100);
+    setFavicon(rem > 0 ? 'working' : 'done', pct);
 
-    if(rem<=0){
-      leave.textContent="Completed 🎉";
+    if(rem <= 0){
+      leaveLabel.style.display = 'none';
+      countdownEl.style.display = 'none';
+      leaveEl.textContent = 'Completed 🎉';
+      if(!notifiedDone){ notifiedDone = true; notify('Work completed', "You've completed your required hours. 🎉"); }
       clearInterval(timer);
+      timer = null;
+      return;
     }else{
-      leave.textContent=clock(now+rem);
+      leaveLabel.style.display = '';
+      countdownEl.style.display = '';
+      leaveEl.textContent = clock(now + rem);
+      if(rem <= TEN_SECONDS && !notifiedTen){ notifiedTen = true; notify('10 minutes remaining', `Only ${Math.ceil(rem/60)} minute(s) left.`); }
     }
-  },1000);
+  }
+  tick();
+  timer = setInterval(tick, 1000);
 }
 
-function add(sec,r){
-  const d=document.createElement("div");
-  d.className="block"+(r?" running":"");
-  d.style.flex=sec;
-  timeline.appendChild(d);
-}
+/* ---------- wiring ---------- */
+document.querySelectorAll('.hour').forEach(h => {
+  h.addEventListener('click', ()=> {
+    document.querySelectorAll('.hour').forEach(x=>x.classList.remove('active'));
+    h.classList.add('active');
+    requiredSeconds = +h.dataset.sec;
+    notifiedTen = false; notifiedDone = false;
+    calc();
+  });
+});
 
-logs.addEventListener("input",calc);
-function toggleTheme(){document.body.classList.toggle("dark");}
-setFavicon("idle",0);
+clearBtn.addEventListener('click', ()=> { logsEl.value = ''; calc(); });
+copySummaryBtn.addEventListener('click', copySummary);
+exportCsvBtn.addEventListener('click', exportCSV);
+
+/* ---------- init ---------- */
+window.addEventListener('load', ()=> {
+  initRing();
+  setFavicon('idle', 0);
+  setTimeout(calc, 50);
+});
+
+logsEl.addEventListener('input', calc);
+logsEl.addEventListener('focus', ()=> { notifiedTen = false; notifiedDone = false; });
+logsEl.addEventListener('keydown', (e)=> { if((e.ctrlKey || e.metaKey) && e.key === 'Enter') calc(); });
+
+function toggleTheme(){ document.body.classList.toggle('dark'); }
+
 </script>
 </body>
 </html>
