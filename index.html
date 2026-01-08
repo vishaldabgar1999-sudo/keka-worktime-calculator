@@ -18,6 +18,8 @@
             --success: #10b981;
             --danger: #ef4444;
             --warning: #f59e0b;
+            --celebration-gold: #facc15;
+            --celebration-glow: rgba(250, 204, 21, 0.6);
         }
 
         body.dark {
@@ -31,8 +33,50 @@
             --primary-glow: rgba(129, 140, 248, 0.4);
         }
 
-        /* Hide Scrollbars */
-        *::-webkit-scrollbar { display: none; }
+        body.celebrating {
+            animation: celebrationShake 0.5s ease-in-out infinite;
+        }
+
+        @keyframes celebrationShake {
+            0%, 100% { transform: translateX(0) rotate(0deg); }
+            25% { transform: translateX(-5px) rotate(-1deg); }
+            75% { transform: translateX(5px) rotate(1deg); }
+        }
+
+        .celebration-stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 10000;
+        }
+
+        .star {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: var(--celebration-gold);
+            border-radius: 50%;
+            animation: starTwinkle 1.5s infinite ease-in-out;
+        }
+
+        @keyframes starTwinkle {
+            0%, 100% { 
+                transform: scale(0) rotate(0deg);
+                opacity: 0;
+            }
+            50% { 
+                transform: scale(1.5) rotate(180deg);
+                opacity: 1;
+            }
+        }
+
+        /* Hide ALL Scrollbars */
+        *::-webkit-scrollbar { width: 0px; height: 0px; background: transparent; }
+        *::-webkit-scrollbar-track { background: transparent; }
+        *::-webkit-scrollbar-thumb { background: transparent; }
         * { -ms-overflow-style: none; scrollbar-width: none; box-sizing: border-box; }
 
         body {
@@ -47,9 +91,9 @@
             padding: 20px;
             overflow: hidden;
             perspective: 1000px;
+            transition: all 0.5s ease;
         }
 
-        /* Canvas for Confetti */
         #confetti-canvas {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             pointer-events: none; z-index: 9999;
@@ -68,11 +112,12 @@
             body { overflow-y: auto; }
         }
 
-        /* 3D Wrapper */
         .card-wrapper {
             position: relative;
             transform-style: preserve-3d;
-            transition: transform 0.1s ease-out;
+            transition: transform 0.3s ease-out;
+            will-change: transform;
+            overflow: visible;
         }
 
         .glass-card {
@@ -88,9 +133,9 @@
             display: flex;
             flex-direction: column;
             transform-style: preserve-3d;
+            overflow: hidden;
         }
 
-        /* Header Area */
         .header-row {
             grid-column: 1 / -1;
             display: flex;
@@ -110,7 +155,6 @@
         }
         .theme-toggle:hover { transform: rotate(15deg) scale(1.1); background: rgba(128,128,128,0.1); }
 
-        /* FIXED BUTTONS / CHIPS */
         .goals-container {
             display: flex; gap: 10px; margin-bottom: 20px;
             position: relative;
@@ -153,11 +197,28 @@
         body.dark textarea { background: rgba(0,0,0,0.2); }
         textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 2px var(--primary-glow); }
 
-        .action-row { display: flex; justify-content: space-between; margin-top: 15px; align-items: center; transform: translateZ(20px); }
-        .clear-btn { color: var(--danger); font-size: 13px; font-weight: 600; cursor: pointer; background: none; border: none; padding: 0; }
+        .action-row { 
+            display: flex; 
+            justify-content: space-between; 
+            margin-top: 15px; 
+            align-items: center; 
+            gap: 10px;
+            transform: translateZ(20px); 
+        }
+        .clear-btn { 
+            color: var(--danger); 
+            font-size: 13px; 
+            font-weight: 600; 
+            cursor: pointer; 
+            background: none; 
+            border: none; 
+            padding: 8px 12px; 
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+        .clear-btn:hover { background: rgba(239,68,68,0.1); color: var(--danger); }
         .auto-save-indicator { font-size: 12px; color: var(--success); opacity: 0; transition: opacity 0.5s; }
 
-        /* Stats & 3D Elements */
         .main-stat-display { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 10px 0; }
         
         .ring-container, .stats-grid, .leave-card, .session-list {
@@ -191,7 +252,6 @@
         .stat-label { font-size: 10px; text-transform: uppercase; color: var(--text-muted); }
         .stat-value { font-size: 15px; font-weight: 700; font-family: 'JetBrains Mono', monospace; margin-top: 4px; }
 
-        /* Updated Leave Card */
         .leave-card {
             background: var(--primary); color: white;
             margin-top: 20px; border: none; box-shadow: 0 10px 30px -5px var(--primary-glow);
@@ -201,23 +261,135 @@
             justify-content: center;
             align-items: center;
             min-height: 120px;
+            transition: all 0.5s ease;
         }
-        .leave-time { font-size: 36px; font-weight: 800; margin: 0; letter-spacing: -1px; line-height: 1.1; }
-        .leave-message { font-size: 14px; margin-top: 6px; font-weight: 500; opacity: 0.9; }
 
+        .leave-card.celebrating {
+            background: linear-gradient(45deg, var(--success), var(--celebration-gold));
+            box-shadow: 0 20px 60px var(--celebration-glow);
+            animation: celebrationPulse 1.5s infinite;
+        }
+
+        @keyframes celebrationPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .leave-time.celebrating {
+            font-size: 48px !important;
+            background: linear-gradient(45deg, #fff, var(--celebration-gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: celebrationBounce 0.8s infinite;
+        }
+
+        @keyframes celebrationBounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-15px); }
+            60% { transform: translateY(-8px); }
+        }
+
+        /* FIXED Session List */
         .session-list {
-            margin-top: 20px; max-height: 180px; overflow-y: auto;
-            border-top: 1px solid var(--border); padding-top: 15px;
+            margin-top: 20px; 
+            max-height: 220px;
+            overflow-y: auto;
+            border-top: 1px solid var(--border); 
+            padding: 15px 0;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
         }
-        .session-item { display: flex; justify-content: space-between; font-size: 12px; padding: 6px 0; border-bottom: 1px solid rgba(128,128,128,0.1); }
-        .session-times { font-family: 'JetBrains Mono', monospace; color: var(--text-muted); }
-        .session-duration { font-weight: 700; color: var(--primary); }
+        .session-list::-webkit-scrollbar { display: none; }
 
+        .session-item { 
+            display: flex; 
+            justify-content: space-between; 
+            font-size: 12px; 
+            padding: 10px 8px; 
+            margin-bottom: 4px;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            border-left: 3px solid transparent;
+        }
+        .session-item:hover {
+            background: rgba(128,128,128,0.08);
+            transform: translateX(4px);
+            border-left-color: var(--primary);
+        }
+        .session-times { 
+            font-family: 'JetBrains Mono', monospace; 
+            color: var(--text-muted); 
+            font-size: 11.5px;
+            min-width: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .session-duration { 
+            font-weight: 800; 
+            color: var(--primary); 
+            font-size: 12px;
+        }
+        .session-currently-working { 
+            color: var(--success) !important; 
+            background: rgba(16,185,129,0.2) !important;
+            padding: 4px 8px !important;
+            border-radius: 6px !important;
+            border: 1px solid var(--success) !important;
+            font-weight: 800 !important;
+            text-transform: uppercase !important;
+            font-size: 10.5px !important;
+            letter-spacing: 0.3px !important;
+        }
+
+        .log-count {
+            font-size: 11px;
+            color: var(--text-muted);
+            text-align: center;
+            padding: 12px 8px;
+            font-weight: 600;
+            border-top: 1px solid var(--border);
+            margin-top: 8px;
+        }
+
+        .streak-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(16,185,129,0.9);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            animation: streakPulse 2s infinite;
+        }
+        @keyframes streakPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .celebration-title {
+            font-size: 28px !important;
+            font-weight: 800;
+            background: linear-gradient(45deg, var(--success), var(--celebration-gold), #ef4444);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: rainbowGlow 2s infinite;
+        }
+
+        @keyframes rainbowGlow {
+            0% { filter: hue-rotate(0deg); }
+            100% { filter: hue-rotate(360deg); }
+        }
     </style>
 </head>
 <body>
 
     <canvas id="confetti-canvas"></canvas>
+    <div class="celebration-stars" id="celebrationStars" style="display: none;"></div>
 
     <div class="container" id="container">
         <div class="header-row">
@@ -225,7 +397,7 @@
                 <h1>Keka Pro <span style="font-size: 12px; vertical-align: middle; background:var(--primary); color:white; padding:2px 6px; border-radius:4px; margin-left:5px;">ULTRA</span></h1>
                 <div class="greeting" id="greeting">Good Morning! ☀️</div>
             </div>
-            <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">🌓</button>
+            <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn" title="Toggle Dark/Light">🌓</button>
         </div>
 
         <div class="card-wrapper" id="card1">
@@ -236,7 +408,15 @@
                     <div class="goal-chip" data-sec="16200">4.5 HRS</div>
                 </div>
 
-                <textarea id="logs" placeholder="Paste Keka logs here...&#10;09:30:00 AM&#10;01:15:00 PM"></textarea>
+                <textarea id="logs" placeholder="Paste your exact logs here:
+9:28:03 AM
+10:22:22 AM
+10:22:45 AM
+10:27:45 AM
+10:35:44 AM
+12:43:44 PM
+1:07:17 PM
+05:00:00 PM"></textarea>
 
                 <div class="action-row">
                     <button class="clear-btn" onclick="clearLogs()">Clear & Reset</button>
@@ -279,38 +459,33 @@
                     </div>
                 </div>
 
-                <div class="glass-card leave-card">
+                <div class="leave-card" id="leaveCard">
                     <div class="stat-label" id="leaveLabel" style="color: rgba(255,255,255,0.8);">Estimated Departure</div>
                     <div class="leave-time" id="leave">--:--</div>
                     <div class="leave-message" id="leaveMessage">Be on time!</div>
+                    <div class="streak-badge" id="streakBadge" style="display: none;"></div>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        // --- 3D TILT LOGIC ---
+        // 3D Tilt Effect
         const container = document.getElementById('container');
         const cards = [document.getElementById('card1'), document.getElementById('card2')];
-
         if (window.matchMedia("(pointer: fine)").matches) {
             container.addEventListener('mousemove', (e) => {
-                const xAxis = (window.innerWidth / 2 - e.pageX) / 45;
-                const yAxis = (window.innerHeight / 2 - e.pageY) / 45;
-                
-                cards.forEach(card => {
-                    card.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
-                });
+                const rect = container.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                const xAxis = (rect.width / 2 - x) / 45;
+                const yAxis = (rect.height / 2 - y) / 45;
+                cards.forEach(card => card.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`);
             });
-
-            container.addEventListener('mouseleave', () => {
-                cards.forEach(card => {
-                    card.style.transform = `rotateY(0deg) rotateX(0deg)`;
-                });
-            });
+            container.addEventListener('mouseleave', () => cards.forEach(card => card.style.transform = 'rotateY(0deg) rotateX(0deg)'));
         }
 
-        // --- CORE LOGIC ---
+        // Core elements
         const logsArea = document.getElementById('logs');
         const ring = document.getElementById('ring');
         const sessionList = document.getElementById('sessionList');
@@ -319,11 +494,17 @@
         const saveIndicator = document.getElementById('saveIndicator');
         const confettiCanvas = document.getElementById('confetti-canvas');
         const ctx = confettiCanvas.getContext('2d');
+        const streakBadge = document.getElementById('streakBadge');
+        const celebrationStars = document.getElementById('celebrationStars');
+        const leaveCard = document.getElementById('leaveCard');
+        const leaveTime = document.getElementById('leave');
+        const leaveLabel = document.getElementById('leaveLabel');
+        const leaveMessage = document.getElementById('leaveMessage');
         
-        const circumference = 2 * Math.PI * 44; 
+        const circumference = 2 * Math.PI * 44;
         let goalSeconds = 30600;
         let notificationSent = false;
-        let confettiTriggered = false;
+        let lastActivity = Date.now();
 
         confettiCanvas.width = window.innerWidth;
         confettiCanvas.height = window.innerHeight;
@@ -332,20 +513,22 @@
             confettiCanvas.height = window.innerHeight;
         });
 
-        function parseTimeToSeconds(str) {
-            if (!str) return null;
-            const clean = str.trim().toUpperCase();
-            const match = clean.match(/^(\d{1,2}):(\d{2})(?::(\d{2}))?\s?(AM|PM)?/);
-            if (!match) return null;
+        // Activity Detection
+        ['mousemove', 'keydown', 'scroll', 'click'].forEach(event => {
+            document.addEventListener(event, () => lastActivity = Date.now(), true);
+        });
 
+        function parseTimeToSeconds(str) {
+            if (!str?.trim()) return null;
+            const clean = str.trim().toUpperCase();
+            const match = clean.match(/^(\d{1,2}):(\d{2})(?::(\d{2}))?\s?(AM|PM)?/i);
+            if (!match) return null;
             let hours = parseInt(match[1]);
             const mins = parseInt(match[2]);
             const secs = match[3] ? parseInt(match[3]) : 0;
             const ampm = match[4];
-
             if (ampm === 'PM' && hours < 12) hours += 12;
             if (ampm === 'AM' && hours === 12) hours = 0;
-
             return (hours * 3600) + (mins * 60) + secs;
         }
 
@@ -355,88 +538,131 @@
             return `${h}h ${m}m`;
         }
 
-        // --- Confetti Engine ---
-        let particles = [];
-        function createParticle() {
-            return {
-                x: Math.random() * confettiCanvas.width,
-                y: -10,
-                color: ['#6366f1', '#10b981', '#f59e0b', '#ef4444'][Math.floor(Math.random() * 4)],
-                size: Math.random() * 7 + 3,
-                speedY: Math.random() * 3 + 2,
-                speedX: Math.random() * 4 - 2,
-                rotation: Math.random() * 360,
-                rotationSpeed: Math.random() * 10 - 5
-            };
-        }
-
-        function updateConfetti() {
-            if (particles.length === 0 && !confettiTriggered) return;
-            ctx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+        function createStars() {
+            celebrationStars.innerHTML = '';
+            celebrationStars.style.display = 'block';
             
-            if (confettiTriggered && particles.length < 150) {
-                particles.push(createParticle());
+            for (let i = 0; i < 30; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 1.5 + 's';
+                star.style.animationDuration = (Math.random() * 1 + 1.5) + 's';
+                celebrationStars.appendChild(star);
             }
+            
+            setTimeout(() => {
+                celebrationStars.style.display = 'none';
+            }, 5000);
+        }
 
-            particles.forEach((p, index) => {
-                p.y += p.speedY;
-                p.x += p.speedX;
-                p.rotation += p.rotationSpeed;
+        function launchConfetti() {
+            const confetti = [];
+            for (let i = 0; i < 150; i++) {
+                confetti.push({
+                    x: Math.random() * confettiCanvas.width,
+                    y: -10,
+                    vx: (Math.random() - 0.5) * 12,
+                    vy: Math.random() * 6 + 6,
+                    size: Math.random() * 6 + 4,
+                    color: `hsl(${Math.random() * 360}, 70%, 60%)`
+                });
+            }
+            
+            function animate() {
+                ctx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+                confetti.forEach((c, i) => {
+                    c.x += c.vx;
+                    c.y += c.vy;
+                    c.vy += 0.12;
+                    c.life = (c.life || 1) - 0.015;
+                    
+                    if (c.life > 0) {
+                        ctx.save();
+                        ctx.globalAlpha = c.life;
+                        ctx.fillStyle = c.color;
+                        ctx.fillRect(c.x, c.y, c.size, c.size);
+                        ctx.restore();
+                    } else {
+                        confetti.splice(i, 1);
+                    }
+                });
                 
-                ctx.save();
-                ctx.translate(p.x, p.y);
-                ctx.rotate(p.rotation * Math.PI / 180);
-                ctx.fillStyle = p.color;
-                ctx.fillRect(-p.size/2, -p.size/2, p.size, p.size);
-                ctx.restore();
-
-                if (p.y > confettiCanvas.height) particles.splice(index, 1);
-            });
-
-            if (particles.length > 0 || confettiTriggered) {
-                requestAnimationFrame(updateConfetti);
+                if (confetti.length > 0) requestAnimationFrame(animate);
             }
+            animate();
         }
 
-        function triggerConfetti() {
-            if (!confettiTriggered) {
-                confettiTriggered = true;
-                updateConfetti();
-                setTimeout(() => { confettiTriggered = false; }, 3000);
-            }
+        function triggerCelebration(currentStreak) {
+            // Screen shake
+            document.body.classList.add('celebrating');
+            
+            // Enhanced confetti
+            launchConfetti();
+            
+            // Golden stars explosion
+            createStars();
+            
+            // Leave card celebration
+            leaveCard.classList.add('celebrating');
+            leaveTime.classList.add('celebrating');
+            
+            setTimeout(() => {
+                document.body.classList.remove('celebrating');
+                leaveCard.classList.remove('celebrating');
+                leaveTime.classList.remove('celebrating');
+            }, 5000);
         }
 
-        // --- Update Loop ---
+        // ENHANCED UPDATE FUNCTION
         function update() {
-            const lines = logsArea.value.split('\n').filter(l => l.trim() !== '');
+            const lines = logsArea.value.split('\n').map(l => l.trim()).filter(l => l !== '');
             let totalWorked = 0;
-            let totalBreak = 0; 
+            let totalBreak = 0;
             let isWorking = false;
-            let sessionHtml = '';
-            
+            let sessions = [];
             let lastOutTimestamp = null;
+            let i = 0;
 
-            for (let i = 0; i < lines.length; i += 2) {
-                const start = parseTimeToSeconds(lines[i]);
-                if (start === null) continue;
+            while (i < lines.length) {
+                const startStr = lines[i];
+                const start = parseTimeToSeconds(startStr);
                 
+                if (start === null) {
+                    i++;
+                    continue;
+                }
+
                 if (lastOutTimestamp !== null) {
                     let breakDuration = start - lastOutTimestamp;
-                    if (breakDuration < 0) breakDuration += 86400; 
+                    if (breakDuration < 0) breakDuration += 86400;
                     totalBreak += breakDuration;
                 }
 
                 let duration = 0;
-                let endStr = "Working...";
+                let endStr = "Currently Working";
                 let currentOutTimestamp = null;
 
-                if (lines[i + 1]) {
-                    let end = parseTimeToSeconds(lines[i + 1]);
-                    if (end < start) end += 86400; 
-                    duration = end - start;
-                    totalWorked += duration;
-                    endStr = lines[i+1].trim(); 
-                    currentOutTimestamp = end; 
+                if (i + 1 < lines.length) {
+                    const endStrCandidate = lines[i + 1];
+                    const end = parseTimeToSeconds(endStrCandidate);
+                    
+                    if (end !== null && end > start) {
+                        duration = end - start;
+                        totalWorked += duration;
+                        endStr = endStrCandidate.split(' ')[0];
+                        currentOutTimestamp = end;
+                        i += 2;
+                    } else {
+                        const now = new Date();
+                        let currentSecs = (now.getHours() * 3600) + (now.getMinutes() * 60) + now.getSeconds();
+                        if (currentSecs < start) currentSecs += 86400;
+                        duration = currentSecs - start;
+                        totalWorked += duration;
+                        isWorking = true;
+                        i++;
+                    }
                 } else {
                     const now = new Date();
                     let currentSecs = (now.getHours() * 3600) + (now.getMinutes() * 60) + now.getSeconds();
@@ -444,11 +670,65 @@
                     duration = currentSecs - start;
                     totalWorked += duration;
                     isWorking = true;
+                    i++;
                 }
-                
+
+                if (sessions.length > 0 && duration < 300 && (start - sessions[sessions.length-1].start) < 900) {
+                    const lastSession = sessions[sessions.length-1];
+                    lastSession.duration += duration;
+                    lastSession.end = endStr;
+                } else {
+                    sessions.push({
+                        start: parseTimeToSeconds(startStr),
+                        startStr: startStr.split(' ')[0],
+                        end: endStr,
+                        duration: duration,
+                        isCurrentlyWorking: endStr === "Currently Working"
+                    });
+                }
+
                 lastOutTimestamp = currentOutTimestamp;
-                sessionHtml += `<div class="session-item"><div class="session-times">${lines[i].trim().split(' ')[0]} - ${endStr.split(' ')[0]}</div><div class="session-duration">+ ${formatDuration(duration)}</div></div>`;
             }
+
+            // Streak tracking
+            const today = new Date().toDateString();
+            let streaks = JSON.parse(localStorage.getItem('kekaStreaks') || '{}');
+            let currentStreak = 0;
+            
+            if (totalWorked >= goalSeconds * 0.8) {
+                const yesterday = new Date(Date.now() - 86400000).toDateString();
+                currentStreak = (streaks[yesterday] || 0) + 1;
+                streaks[today] = currentStreak;
+                localStorage.setItem('kekaStreaks', JSON.stringify(streaks));
+                
+                if (currentStreak > 0) {
+                    streakBadge.textContent = `🔥 ${currentStreak} Day Streak`;
+                    streakBadge.style.display = 'block';
+                }
+            } else {
+                delete streaks[today];
+                streakBadge.style.display = 'none';
+                localStorage.setItem('kekaStreaks', JSON.stringify(streaks));
+            }
+
+            // Update UI
+            const displaySessions = sessions.slice(-20);
+            let sessionHtml = '';
+            
+            displaySessions.forEach(session => {
+                const durationText = formatDuration(session.duration);
+                const className = session.isCurrentlyWorking ? 'session-currently-working' : '';
+                sessionHtml += `
+                    <div class="session-item">
+                        <div class="session-times">${session.startStr} → ${session.end}</div>
+                        <div class="session-duration ${className}">+ ${durationText}</div>
+                    </div>`;
+            });
+
+            const totalSessions = sessions.length;
+            const logCountHtml = totalSessions > 0 ? 
+                `<div class="log-count">${totalSessions} session${totalSessions !== 1 ? 's' : ''} ${isWorking ? '🟢 Currently Working' : ''}</div>` : 
+                '<div class="log-count">No sessions parsed</div>';
 
             const progress = Math.min(totalWorked / goalSeconds, 1);
             const offset = circumference - (progress * circumference);
@@ -457,6 +737,7 @@
 
             document.getElementById('worked').innerText = formatDuration(totalWorked);
             document.getElementById('breakTime').innerText = formatDuration(totalBreak);
+            document.getElementById('remainingTime').innerText = formatDuration(Math.max(0, goalSeconds - totalWorked));
 
             if (isWorking) {
                 statusBadge.className = 'status-badge working';
@@ -466,45 +747,71 @@
                 statusText.innerText = "Away";
             }
 
-            const remainingSeconds = Math.max(0, goalSeconds - totalWorked);
-            document.getElementById('remainingTime').innerText = formatDuration(remainingSeconds);
-
-            // Dynamic Title & Logic
+            // EPIC Goal celebration - GENDER NEUTRAL MESSAGES
             if (totalWorked >= goalSeconds) {
-                document.title = "🎉 GOAL REACHED! - Keka Pro";
+                document.title = "🎉🏆 GOAL CRUSHED! - Keka Pro Ultra";
+                leaveLabel.innerText = "🏆 CHAMPION!";
+                leaveTime.innerText = "100%";
+                leaveTime.classList.add('celebrating');
                 
-                // Update Leave Card for "Done" state
-                document.getElementById('leaveLabel').innerText = "Status";
-                document.getElementById('leave').innerText = "Done!";
-                document.getElementById('leaveMessage').innerText = "Enjoy your day! 🚀";
-                document.querySelector('.leave-card').style.background = "#10b981";
+                // Gender-neutral celebration messages
+                let streakText = currentStreak > 0 ? `🔥 ${currentStreak}-day streak! ` : '';
+                const celebrationMessages = [
+                    `${streakText}Goal absolutely crushed! 🚀✨`,
+                    `${streakText}Target smashed perfectly! 🎯💥`,
+                    `${streakText}Outstanding performance! 👏🌟`,
+                    `${streakText}Masterclass execution! 🏅✨`,
+                    `${streakText}Perfection achieved! 🎉🔥`
+                ];
+                
+                leaveMessage.innerText = celebrationMessages[Math.floor(Math.random() * celebrationMessages.length)];
+                leaveCard.style.background = "linear-gradient(45deg, var(--success), var(--celebration-gold))";
                 
                 if (!notificationSent) {
-                    new Notification("Target Destroyed!", { body: "You have completed your hours. Time to fly!" });
+                    triggerCelebration(currentStreak);
                     notificationSent = true;
-                    triggerConfetti();
                 }
             } else {
-                document.title = `(${formatDuration(remainingSeconds)}) Keka Pro`;
-                const leaveTime = new Date(Date.now() + remainingSeconds * 1000);
-                
-                // Update Leave Card for "Working" state
-                document.getElementById('leaveLabel').innerText = "Estimated Departure";
-                document.getElementById('leave').innerText = leaveTime.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-                document.getElementById('leaveMessage').innerText = "Keep it up!";
-                document.querySelector('.leave-card').style.background = "var(--primary)";
+                document.title = `Keka Pro Tracker`;
                 notificationSent = false;
+                const leaveTimeCalc = new Date(Date.now() + (goalSeconds - totalWorked) * 1000);
+                leaveLabel.innerText = "Estimated Departure";
+                leaveTime.innerText = leaveTimeCalc.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                leaveTime.classList.remove('celebrating');
+                leaveMessage.innerText = "Keep crushing it! 💪";
+                leaveCard.style.background = "var(--primary)";
+                leaveCard.classList.remove('celebrating');
             }
 
-            sessionList.innerHTML = sessionHtml || '<div style="text-align:center; color:var(--text-muted); font-size:12px; margin-top:10px">Ready for logs...</div>';
+            sessionList.innerHTML = sessionHtml + logCountHtml;
             localStorage.setItem('kekaLogs', logsArea.value);
         }
 
-        // --- Event Listeners ---
-        function handleInput() { update(); saveIndicator.style.opacity = '1'; setTimeout(() => { saveIndicator.style.opacity = '0'; }, 1000); }
-        function clearLogs() { logsArea.value = ''; notificationSent = false; handleInput(); }
+        function handleInput() { 
+            update(); 
+            saveIndicator.style.opacity = '1'; 
+            setTimeout(() => saveIndicator.style.opacity = '0', 1000); 
+        }
+        
+        function clearLogs() { 
+            logsArea.value = ''; 
+            notificationSent = false;
+            localStorage.removeItem('kekaStreaks');
+            streakBadge.style.display = 'none';
+            handleInput(); 
+        }
 
-        // Fixed Click Logic for Chips
+        // Weekly Summary (Ctrl+W)
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey && e.key === 'w') {
+                e.preventDefault();
+                const streaks = JSON.parse(localStorage.getItem('kekaStreaks') || '{}');
+                const maxStreak = Math.max(...Object.values(streaks));
+                alert(`📊 Weekly Summary\nBest Streak: ${maxStreak} days\nCurrent Streak: ${streaks[new Date().toDateString()] || 0} days\nLogs auto-saved! 💾`);
+            }
+        });
+
+        // Event listeners
         document.getElementById('chips').addEventListener('click', (e) => {
             const chip = e.target.closest('.goal-chip');
             if (chip) {
@@ -512,6 +819,7 @@
                 chip.classList.add('active');
                 goalSeconds = parseInt(chip.dataset.sec);
                 notificationSent = false;
+                streakBadge.style.display = 'none';
                 update();
             }
         });
@@ -521,7 +829,6 @@
             localStorage.setItem('theme', document.body.classList.contains('dark') ? 'dark' : 'light');
         }
 
-        // UPDATED: Professional & Inclusive Greeting
         function setGreeting() {
             const hour = new Date().getHours();
             const text = document.getElementById('greeting');
@@ -530,8 +837,7 @@
             else text.innerText = "Good Evening! 🌙";
         }
 
-        document.body.addEventListener('click', () => { if (Notification.permission !== "granted") Notification.requestPermission(); }, { once: true });
-
+        // Initialize
         window.addEventListener('DOMContentLoaded', () => {
             const savedLogs = localStorage.getItem('kekaLogs');
             if (savedLogs) logsArea.value = savedLogs;
