@@ -290,7 +290,6 @@
             60% { transform: translateY(-8px); }
         }
 
-        /* FIXED Session List */
         .session-list {
             margin-top: 20px; 
             max-height: 220px;
@@ -351,38 +350,6 @@
             font-weight: 600;
             border-top: 1px solid var(--border);
             margin-top: 8px;
-        }
-
-        .streak-badge {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: rgba(16,185,129,0.9);
-            color: white;
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 700;
-            animation: streakPulse 2s infinite;
-        }
-        @keyframes streakPulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-        }
-
-        .celebration-title {
-            font-size: 28px !important;
-            font-weight: 800;
-            background: linear-gradient(45deg, var(--success), var(--celebration-gold), #ef4444);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            animation: rainbowGlow 2s infinite;
-        }
-
-        @keyframes rainbowGlow {
-            0% { filter: hue-rotate(0deg); }
-            100% { filter: hue-rotate(360deg); }
         }
     </style>
 </head>
@@ -462,8 +429,7 @@
                 <div class="leave-card" id="leaveCard">
                     <div class="stat-label" id="leaveLabel" style="color: rgba(255,255,255,0.8);">Estimated Departure</div>
                     <div class="leave-time" id="leave">--:--</div>
-                    <div class="leave-message" id="leaveMessage">Be on time!</div>
-                    <div class="streak-badge" id="streakBadge" style="display: none;"></div>
+                    <div class="leave-message" id="leaveMessage"></div>
                 </div>
             </div>
         </div>
@@ -494,28 +460,21 @@
         const saveIndicator = document.getElementById('saveIndicator');
         const confettiCanvas = document.getElementById('confetti-canvas');
         const ctx = confettiCanvas.getContext('2d');
-        const streakBadge = document.getElementById('streakBadge');
         const celebrationStars = document.getElementById('celebrationStars');
         const leaveCard = document.getElementById('leaveCard');
         const leaveTime = document.getElementById('leave');
         const leaveLabel = document.getElementById('leaveLabel');
         const leaveMessage = document.getElementById('leaveMessage');
-        
+
         const circumference = 2 * Math.PI * 44;
         let goalSeconds = 30600;
         let notificationSent = false;
-        let lastActivity = Date.now();
 
         confettiCanvas.width = window.innerWidth;
         confettiCanvas.height = window.innerHeight;
         window.addEventListener('resize', () => {
             confettiCanvas.width = window.innerWidth;
             confettiCanvas.height = window.innerHeight;
-        });
-
-        // Activity Detection
-        ['mousemove', 'keydown', 'scroll', 'click'].forEach(event => {
-            document.addEventListener(event, () => lastActivity = Date.now(), true);
         });
 
         function parseTimeToSeconds(str) {
@@ -538,10 +497,23 @@
             return `${h}h ${m}m`;
         }
 
+        function secondsToAwayMessage(sec) {
+            if (sec === null || sec === undefined) return "Away / Not Working";
+            const mins = Math.floor(sec / 60);
+
+            // Lunch: 12:00 (720) to 14:00 (840)
+            if (mins >= 720 && mins < 840) return "On Lunch Break 🍽️";
+
+            // Tea: 16:00 (960) to 17:00 (1020)
+            if (mins >= 960 && mins < 1020) return "On Tea Break ☕";
+
+            return "Away / Not Working";
+        }
+
         function createStars() {
             celebrationStars.innerHTML = '';
             celebrationStars.style.display = 'block';
-            
+
             for (let i = 0; i < 30; i++) {
                 const star = document.createElement('div');
                 star.className = 'star';
@@ -551,7 +523,7 @@
                 star.style.animationDuration = (Math.random() * 1 + 1.5) + 's';
                 celebrationStars.appendChild(star);
             }
-            
+
             setTimeout(() => {
                 celebrationStars.style.display = 'none';
             }, 5000);
@@ -569,7 +541,7 @@
                     color: `hsl(${Math.random() * 360}, 70%, 60%)`
                 });
             }
-            
+
             function animate() {
                 ctx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
                 confetti.forEach((c, i) => {
@@ -577,7 +549,7 @@
                     c.y += c.vy;
                     c.vy += 0.12;
                     c.life = (c.life || 1) - 0.015;
-                    
+
                     if (c.life > 0) {
                         ctx.save();
                         ctx.globalAlpha = c.life;
@@ -588,26 +560,20 @@
                         confetti.splice(i, 1);
                     }
                 });
-                
+
                 if (confetti.length > 0) requestAnimationFrame(animate);
             }
             animate();
         }
 
-        function triggerCelebration(currentStreak) {
-            // Screen shake
+        function triggerCelebration() {
             document.body.classList.add('celebrating');
-            
-            // Enhanced confetti
             launchConfetti();
-            
-            // Golden stars explosion
             createStars();
-            
-            // Leave card celebration
+
             leaveCard.classList.add('celebrating');
             leaveTime.classList.add('celebrating');
-            
+
             setTimeout(() => {
                 document.body.classList.remove('celebrating');
                 leaveCard.classList.remove('celebrating');
@@ -615,7 +581,7 @@
             }, 5000);
         }
 
-        // ENHANCED UPDATE FUNCTION
+        // MAIN UPDATE FUNCTION
         function update() {
             const lines = logsArea.value.split('\n').map(l => l.trim()).filter(l => l !== '');
             let totalWorked = 0;
@@ -623,12 +589,13 @@
             let isWorking = false;
             let sessions = [];
             let lastOutTimestamp = null;
+            let lastValidOutForAway = null;
             let i = 0;
 
             while (i < lines.length) {
                 const startStr = lines[i];
                 const start = parseTimeToSeconds(startStr);
-                
+
                 if (start === null) {
                     i++;
                     continue;
@@ -647,12 +614,17 @@
                 if (i + 1 < lines.length) {
                     const endStrCandidate = lines[i + 1];
                     const end = parseTimeToSeconds(endStrCandidate);
-                    
+
                     if (end !== null && end > start) {
                         duration = end - start;
                         totalWorked += duration;
+
                         endStr = endStrCandidate.split(' ')[0];
                         currentOutTimestamp = end;
+
+                        // store last out
+                        lastValidOutForAway = end;
+
                         i += 2;
                     } else {
                         const now = new Date();
@@ -690,31 +662,10 @@
                 lastOutTimestamp = currentOutTimestamp;
             }
 
-            // Streak tracking
-            const today = new Date().toDateString();
-            let streaks = JSON.parse(localStorage.getItem('kekaStreaks') || '{}');
-            let currentStreak = 0;
-            
-            if (totalWorked >= goalSeconds * 0.8) {
-                const yesterday = new Date(Date.now() - 86400000).toDateString();
-                currentStreak = (streaks[yesterday] || 0) + 1;
-                streaks[today] = currentStreak;
-                localStorage.setItem('kekaStreaks', JSON.stringify(streaks));
-                
-                if (currentStreak > 0) {
-                    streakBadge.textContent = `🔥 ${currentStreak} Day Streak`;
-                    streakBadge.style.display = 'block';
-                }
-            } else {
-                delete streaks[today];
-                streakBadge.style.display = 'none';
-                localStorage.setItem('kekaStreaks', JSON.stringify(streaks));
-            }
-
-            // Update UI
+            // sessions list UI
             const displaySessions = sessions.slice(-20);
             let sessionHtml = '';
-            
+
             displaySessions.forEach(session => {
                 const durationText = formatDuration(session.duration);
                 const className = session.isCurrentlyWorking ? 'session-currently-working' : '';
@@ -730,15 +681,18 @@
                 `<div class="log-count">${totalSessions} session${totalSessions !== 1 ? 's' : ''} ${isWorking ? '🟢 Currently Working' : ''}</div>` : 
                 '<div class="log-count">No sessions parsed</div>';
 
+            // ring update
             const progress = Math.min(totalWorked / goalSeconds, 1);
             const offset = circumference - (progress * circumference);
             ring.style.strokeDashoffset = offset;
             document.getElementById('percent').innerText = Math.floor(progress * 100) + '%';
 
+            // stats
             document.getElementById('worked').innerText = formatDuration(totalWorked);
             document.getElementById('breakTime').innerText = formatDuration(totalBreak);
             document.getElementById('remainingTime').innerText = formatDuration(Math.max(0, goalSeconds - totalWorked));
 
+            // badge
             if (isWorking) {
                 statusBadge.className = 'status-badge working';
                 statusText.innerText = "Active";
@@ -747,40 +701,48 @@
                 statusText.innerText = "Away";
             }
 
-            // EPIC Goal celebration - GENDER NEUTRAL MESSAGES
+            // ✅ TAB TITLE (Leave time or Completed)
             if (totalWorked >= goalSeconds) {
-                document.title = "🎉🏆 GOAL CRUSHED! - Keka Pro Ultra";
-                leaveLabel.innerText = "🏆 CHAMPION!";
+                document.title = "✅ Done for Today";
+            } else {
+                const leaveTimeCalcForTitle = new Date(Date.now() + (goalSeconds - totalWorked) * 1000);
+                const leaveAtTitle = leaveTimeCalcForTitle.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                document.title = `⏳ Leave @ ${leaveAtTitle}`;
+            }
+
+            // bottom card logic
+            if (totalWorked >= goalSeconds) {
+                leaveLabel.innerText = "Done for Today ✅";
                 leaveTime.innerText = "100%";
                 leaveTime.classList.add('celebrating');
-                
-                // Gender-neutral celebration messages
-                let streakText = currentStreak > 0 ? `🔥 ${currentStreak}-day streak! ` : '';
-                const celebrationMessages = [
-                    `${streakText}Goal absolutely crushed! 🚀✨`,
-                    `${streakText}Target smashed perfectly! 🎯💥`,
-                    `${streakText}Outstanding performance! 👏🌟`,
-                    `${streakText}Masterclass execution! 🏅✨`,
-                    `${streakText}Perfection achieved! 🎉🔥`
-                ];
-                
-                leaveMessage.innerText = celebrationMessages[Math.floor(Math.random() * celebrationMessages.length)];
+                leaveMessage.innerText = "";
                 leaveCard.style.background = "linear-gradient(45deg, var(--success), var(--celebration-gold))";
-                
+
                 if (!notificationSent) {
-                    triggerCelebration(currentStreak);
+                    triggerCelebration();
                     notificationSent = true;
                 }
             } else {
-                document.title = `Keka Pro Tracker`;
                 notificationSent = false;
+
                 const leaveTimeCalc = new Date(Date.now() + (goalSeconds - totalWorked) * 1000);
-                leaveLabel.innerText = "Estimated Departure";
-                leaveTime.innerText = leaveTimeCalc.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                const leaveAt = leaveTimeCalc.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+
                 leaveTime.classList.remove('celebrating');
-                leaveMessage.innerText = "Keep crushing it! 💪";
-                leaveCard.style.background = "var(--primary)";
-                leaveCard.classList.remove('celebrating');
+
+                if (isWorking) {
+                    leaveLabel.innerText = "You are Working 🟢";
+                    leaveTime.innerText = leaveAt;
+                    leaveMessage.innerText = "Add OUT time to lock final total ✅";
+                    leaveCard.style.background = "var(--primary)";
+                    leaveCard.classList.remove('celebrating');
+                } else {
+                    leaveLabel.innerText = "Estimated Departure";
+                    leaveTime.innerText = leaveAt;
+                    leaveMessage.innerText = secondsToAwayMessage(lastValidOutForAway);
+                    leaveCard.style.background = "var(--primary)";
+                    leaveCard.classList.remove('celebrating');
+                }
             }
 
             sessionList.innerHTML = sessionHtml + logCountHtml;
@@ -792,26 +754,14 @@
             saveIndicator.style.opacity = '1'; 
             setTimeout(() => saveIndicator.style.opacity = '0', 1000); 
         }
-        
+
         function clearLogs() { 
             logsArea.value = ''; 
             notificationSent = false;
-            localStorage.removeItem('kekaStreaks');
-            streakBadge.style.display = 'none';
             handleInput(); 
         }
 
-        // Weekly Summary (Ctrl+W)
-        document.addEventListener('keydown', (e) => {
-            if (e.ctrlKey && e.key === 'w') {
-                e.preventDefault();
-                const streaks = JSON.parse(localStorage.getItem('kekaStreaks') || '{}');
-                const maxStreak = Math.max(...Object.values(streaks));
-                alert(`📊 Weekly Summary\nBest Streak: ${maxStreak} days\nCurrent Streak: ${streaks[new Date().toDateString()] || 0} days\nLogs auto-saved! 💾`);
-            }
-        });
-
-        // Event listeners
+        // chips
         document.getElementById('chips').addEventListener('click', (e) => {
             const chip = e.target.closest('.goal-chip');
             if (chip) {
@@ -819,7 +769,6 @@
                 chip.classList.add('active');
                 goalSeconds = parseInt(chip.dataset.sec);
                 notificationSent = false;
-                streakBadge.style.display = 'none';
                 update();
             }
         });
@@ -837,7 +786,7 @@
             else text.innerText = "Good Evening! 🌙";
         }
 
-        // Initialize
+        // init
         window.addEventListener('DOMContentLoaded', () => {
             const savedLogs = localStorage.getItem('kekaLogs');
             if (savedLogs) logsArea.value = savedLogs;
