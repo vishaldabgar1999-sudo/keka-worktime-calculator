@@ -63,11 +63,11 @@
         }
 
         @keyframes starTwinkle {
-            0%, 100% { 
+            0%, 100% {
                 transform: scale(0) rotate(0deg);
                 opacity: 0;
             }
-            50% { 
+            50% {
                 transform: scale(1.5) rotate(180deg);
                 opacity: 1;
             }
@@ -144,7 +144,7 @@
             margin-bottom: 10px;
             transform: translateZ(20px);
         }
-        
+
         h1 { margin: 0; font-size: 24px; font-weight: 800; letter-spacing: -0.5px; }
         .greeting { font-size: 14px; color: var(--text-muted); font-weight: 400; }
 
@@ -158,15 +158,15 @@
         .goals-container {
             display: flex; gap: 10px; margin-bottom: 20px;
             position: relative;
-            z-index: 10; 
+            z-index: 10;
             transform: translateZ(30px);
         }
-        
+
         .goal-chip {
             flex: 1; text-align: center; padding: 12px;
             border-radius: 12px; font-size: 14px; font-weight: 700;
             cursor: pointer; border: 1px solid var(--border);
-            background: rgba(128, 128, 128, 0.1); 
+            background: rgba(128, 128, 128, 0.1);
             color: var(--text-muted);
             transition: all 0.2s;
         }
@@ -177,9 +177,9 @@
         }
 
         .goal-chip.active {
-            background: var(--primary); 
+            background: var(--primary);
             color: white;
-            box-shadow: 0 4px 15px var(--primary-glow); 
+            box-shadow: 0 4px 15px var(--primary-glow);
             border-color: var(--primary);
             transform: scale(1.02);
         }
@@ -197,43 +197,47 @@
         body.dark textarea { background: rgba(0,0,0,0.2); }
         textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 2px var(--primary-glow); }
 
-        .action-row { 
-            display: flex; 
-            justify-content: space-between; 
-            margin-top: 15px; 
-            align-items: center; 
+        .action-row {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+            align-items: center;
             gap: 10px;
-            transform: translateZ(20px); 
+            transform: translateZ(20px);
         }
-        .clear-btn { 
-            color: var(--danger); 
-            font-size: 13px; 
-            font-weight: 600; 
-            cursor: pointer; 
-            background: none; 
-            border: none; 
-            padding: 8px 12px; 
+        .clear-btn {
+            color: var(--danger);
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 8px 12px;
             border-radius: 8px;
             transition: all 0.2s;
         }
         .clear-btn:hover { background: rgba(239,68,68,0.1); color: var(--danger); }
         .auto-save-indicator { font-size: 12px; color: var(--success); opacity: 0; transition: opacity 0.5s; }
 
-        .main-stat-display { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 10px 0; }
-        
-        .ring-container, .stats-grid, .leave-card, .session-list {
-            transform: translateZ(30px);
+        .main-stat-display {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            text-align: center; padding: 10px 0;
         }
+
+        .ring-container, .stats-grid, .leave-card, .session-list { transform: translateZ(30px); }
 
         .ring-container { position: relative; width: 200px; height: 200px; margin-bottom: 20px; }
         svg { transform: rotate(-90deg); width: 100%; height: 100%; filter: drop-shadow(0 0 10px var(--primary-glow)); }
         circle { fill: none; stroke-width: 10; stroke-linecap: round; }
         .ring-bg { stroke: var(--text-muted); opacity: 0.1; }
         .ring-fg { stroke: var(--primary); transition: stroke-dashoffset 0.8s cubic-bezier(0.4, 0, 0.2, 1); }
-        
-        .ring-content { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+
+        .ring-content {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+        }
         .percentage { font-size: 42px; font-weight: 800; }
-        
+
         .status-badge {
             margin-top: 8px; padding: 4px 12px; border-radius: 20px;
             font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;
@@ -242,7 +246,11 @@
         .status-badge.working { background: rgba(16, 185, 129, 0.15); color: var(--success); }
         .status-badge.away { background: rgba(245, 158, 11, 0.15); color: var(--warning); }
         .pulse-dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; animation: pulse 2s infinite; }
-        @keyframes pulse { 0% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(1.4); } 100% { opacity: 1; transform: scale(1); } }
+        @keyframes pulse {
+            0% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(1.4); }
+            100% { opacity: 1; transform: scale(1); }
+        }
 
         .stats-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; width: 100%; margin-top: 10px; }
         .stat-box {
@@ -256,10 +264,7 @@
             background: var(--primary); color: white;
             margin-top: 20px; border: none; box-shadow: 0 10px 30px -5px var(--primary-glow);
             border-radius: 16px; padding: 20px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
             min-height: 120px;
             transition: all 0.5s ease;
         }
@@ -276,12 +281,14 @@
         }
 
         .leave-time.celebrating {
-            font-size: 48px !important;
+            font-size: 36px !important;
             background: linear-gradient(45deg, #fff, var(--celebration-gold));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
             animation: celebrationBounce 0.8s infinite;
+            text-align: center;
+            line-height: 1.2;
         }
 
         @keyframes celebrationBounce {
@@ -291,10 +298,10 @@
         }
 
         .session-list {
-            margin-top: 20px; 
+            margin-top: 20px;
             max-height: 220px;
             overflow-y: auto;
-            border-top: 1px solid var(--border); 
+            border-top: 1px solid var(--border);
             padding: 15px 0;
             -webkit-overflow-scrolling: touch;
             scrollbar-width: none;
@@ -302,11 +309,11 @@
         }
         .session-list::-webkit-scrollbar { display: none; }
 
-        .session-item { 
-            display: flex; 
-            justify-content: space-between; 
-            font-size: 12px; 
-            padding: 10px 8px; 
+        .session-item {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            padding: 10px 8px;
             margin-bottom: 4px;
             border-radius: 8px;
             transition: all 0.2s ease;
@@ -317,21 +324,22 @@
             transform: translateX(4px);
             border-left-color: var(--primary);
         }
-        .session-times { 
-            font-family: 'JetBrains Mono', monospace; 
-            color: var(--text-muted); 
+
+        .session-times {
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--text-muted);
             font-size: 11.5px;
             min-width: 0;
             overflow: hidden;
             text-overflow: ellipsis;
         }
-        .session-duration { 
-            font-weight: 800; 
-            color: var(--primary); 
+        .session-duration {
+            font-weight: 800;
+            color: var(--primary);
             font-size: 12px;
         }
-        .session-currently-working { 
-            color: var(--success) !important; 
+        .session-currently-working {
+            color: var(--success) !important;
             background: rgba(16,185,129,0.2) !important;
             padding: 4px 8px !important;
             border-radius: 6px !important;
@@ -355,27 +363,27 @@
 </head>
 <body>
 
-    <canvas id="confetti-canvas"></canvas>
-    <div class="celebration-stars" id="celebrationStars" style="display: none;"></div>
+<canvas id="confetti-canvas"></canvas>
+<div class="celebration-stars" id="celebrationStars" style="display: none;"></div>
 
-    <div class="container" id="container">
-        <div class="header-row">
-            <div>
-                <h1>Keka Pro <span style="font-size: 12px; vertical-align: middle; background:var(--primary); color:white; padding:2px 6px; border-radius:4px; margin-left:5px;">ULTRA</span></h1>
-                <div class="greeting" id="greeting">Good Morning! ☀️</div>
-            </div>
-            <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn" title="Toggle Dark/Light">🌓</button>
+<div class="container" id="container">
+    <div class="header-row">
+        <div>
+            <h1>Keka Pro <span style="font-size: 12px; vertical-align: middle; background:var(--primary); color:white; padding:2px 6px; border-radius:4px; margin-left:5px;">ULTRA</span></h1>
+            <div class="greeting" id="greeting">Good Morning! ☀️</div>
         </div>
+        <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn" title="Toggle Dark/Light">🌓</button>
+    </div>
 
-        <div class="card-wrapper" id="card1">
-            <div class="glass-card">
-                <div class="goals-container" id="chips">
-                    <div class="goal-chip active" data-sec="30600">8.5 HRS</div>
-                    <div class="goal-chip" data-sec="27000">7.5 HRS</div>
-                    <div class="goal-chip" data-sec="16200">4.5 HRS</div>
-                </div>
+    <div class="card-wrapper" id="card1">
+        <div class="glass-card">
+            <div class="goals-container" id="chips">
+                <div class="goal-chip active" data-sec="30600">8.5 HRS</div>
+                <div class="goal-chip" data-sec="27000">7.5 HRS</div>
+                <div class="goal-chip" data-sec="16200">4.5 HRS</div>
+            </div>
 
-                <textarea id="logs" placeholder="Paste your exact logs here:
+            <textarea id="logs" placeholder="Paste your exact logs here:
 9:28:03 AM
 10:22:22 AM
 10:22:45 AM
@@ -385,256 +393,241 @@
 1:07:17 PM
 05:00:00 PM"></textarea>
 
-                <div class="action-row">
-                    <button class="clear-btn" onclick="clearLogs()">Clear & Reset</button>
-                    <div class="auto-save-indicator" id="saveIndicator">✓ Saved</div>
-                </div>
-
-                <div class="session-list" id="sessionList"></div>
+            <div class="action-row">
+                <button class="clear-btn" onclick="clearLogs()">Clear & Reset</button>
+                <div class="auto-save-indicator" id="saveIndicator">✓ Saved</div>
             </div>
-        </div>
 
-        <div class="card-wrapper" id="card2">
-            <div class="glass-card">
-                <div class="main-stat-display">
-                    <div class="ring-container">
-                        <svg viewBox="0 0 100 100">
-                            <circle class="ring-bg" cx="50" cy="50" r="44"></circle>
-                            <circle class="ring-fg" id="ring" cx="50" cy="50" r="44" stroke-dasharray="276.46" stroke-dashoffset="276.46"></circle>
-                        </svg>
-                        <div class="ring-content">
-                            <div class="percentage" id="percent">0%</div>
-                            <div class="status-badge away" id="statusBadge">
-                                <span class="pulse-dot"></span> <span id="statusText">Away</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="stats-grid">
-                    <div class="stat-box">
-                        <div class="stat-label">Total Worked</div>
-                        <div class="stat-value" id="worked">0h 0m</div>
-                    </div>
-                    <div class="stat-box">
-                        <div class="stat-label">Remaining</div>
-                        <div class="stat-value" id="remainingTime">0h 0m</div>
-                    </div>
-                    <div class="stat-box">
-                        <div class="stat-label">Total Break</div>
-                        <div class="stat-value" id="breakTime">0h 0m</div>
-                    </div>
-                </div>
-
-                <div class="leave-card" id="leaveCard">
-                    <div class="stat-label" id="leaveLabel" style="color: rgba(255,255,255,0.8);">Estimated Departure</div>
-                    <div class="leave-time" id="leave">--:--</div>
-                    <div class="leave-message" id="leaveMessage"></div>
-                </div>
-            </div>
+            <div class="session-list" id="sessionList"></div>
         </div>
     </div>
 
-    <script>
-        // 3D Tilt Effect
-        const container = document.getElementById('container');
-        const cards = [document.getElementById('card1'), document.getElementById('card2')];
-        if (window.matchMedia("(pointer: fine)").matches) {
-            container.addEventListener('mousemove', (e) => {
-                const rect = container.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
-                const xAxis = (rect.width / 2 - x) / 45;
-                const yAxis = (rect.height / 2 - y) / 45;
-                cards.forEach(card => card.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`);
-            });
-            container.addEventListener('mouseleave', () => cards.forEach(card => card.style.transform = 'rotateY(0deg) rotateX(0deg)'));
-        }
+    <div class="card-wrapper" id="card2">
+        <div class="glass-card">
+            <div class="main-stat-display">
+                <div class="ring-container">
+                    <svg viewBox="0 0 100 100">
+                        <circle class="ring-bg" cx="50" cy="50" r="44"></circle>
+                        <circle class="ring-fg" id="ring" cx="50" cy="50" r="44" stroke-dasharray="276.46" stroke-dashoffset="276.46"></circle>
+                    </svg>
+                    <div class="ring-content">
+                        <div class="percentage" id="percent">0%</div>
+                        <div class="status-badge away" id="statusBadge">
+                            <span class="pulse-dot"></span> <span id="statusText">Away</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-        // Core elements
-        const logsArea = document.getElementById('logs');
-        const ring = document.getElementById('ring');
-        const sessionList = document.getElementById('sessionList');
-        const statusBadge = document.getElementById('statusBadge');
-        const statusText = document.getElementById('statusText');
-        const saveIndicator = document.getElementById('saveIndicator');
-        const confettiCanvas = document.getElementById('confetti-canvas');
-        const ctx = confettiCanvas.getContext('2d');
-        const celebrationStars = document.getElementById('celebrationStars');
-        const leaveCard = document.getElementById('leaveCard');
-        const leaveTime = document.getElementById('leave');
-        const leaveLabel = document.getElementById('leaveLabel');
-        const leaveMessage = document.getElementById('leaveMessage');
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <div class="stat-label">Total Worked</div>
+                    <div class="stat-value" id="worked">0h 0m</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Remaining</div>
+                    <div class="stat-value" id="remainingTime">0h 0m</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Total Break</div>
+                    <div class="stat-value" id="breakTime">0h 0m</div>
+                </div>
+            </div>
 
-        const circumference = 2 * Math.PI * 44;
-        let goalSeconds = 30600;
-        let notificationSent = false;
+            <div class="leave-card" id="leaveCard">
+                <div class="stat-label" id="leaveLabel" style="color: rgba(255,255,255,0.8);">Estimated Departure</div>
+                <div class="leave-time" id="leave">--:--</div>
+                <div class="leave-message" id="leaveMessage"></div>
+            </div>
+        </div>
+    </div>
+</div>
 
+<script>
+    const container = document.getElementById('container');
+    const cards = [document.getElementById('card1'), document.getElementById('card2')];
+    if (window.matchMedia("(pointer: fine)").matches) {
+        container.addEventListener('mousemove', (e) => {
+            const rect = container.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            const xAxis = (rect.width / 2 - x) / 45;
+            const yAxis = (rect.height / 2 - y) / 45;
+            cards.forEach(card => card.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`);
+        });
+        container.addEventListener('mouseleave', () => cards.forEach(card => card.style.transform = 'rotateY(0deg) rotateX(0deg)'));
+    }
+
+    const logsArea = document.getElementById('logs');
+    const ring = document.getElementById('ring');
+    const sessionList = document.getElementById('sessionList');
+    const statusBadge = document.getElementById('statusBadge');
+    const statusText = document.getElementById('statusText');
+    const saveIndicator = document.getElementById('saveIndicator');
+    const confettiCanvas = document.getElementById('confetti-canvas');
+    const ctx = confettiCanvas.getContext('2d');
+    const celebrationStars = document.getElementById('celebrationStars');
+    const leaveCard = document.getElementById('leaveCard');
+    const leaveTime = document.getElementById('leave');
+    const leaveLabel = document.getElementById('leaveLabel');
+    const leaveMessage = document.getElementById('leaveMessage');
+
+    const circumference = 2 * Math.PI * 44;
+    let goalSeconds = 30600;
+    let notificationSent = false;
+
+    confettiCanvas.width = window.innerWidth;
+    confettiCanvas.height = window.innerHeight;
+    window.addEventListener('resize', () => {
         confettiCanvas.width = window.innerWidth;
         confettiCanvas.height = window.innerHeight;
-        window.addEventListener('resize', () => {
-            confettiCanvas.width = window.innerWidth;
-            confettiCanvas.height = window.innerHeight;
-        });
+    });
 
-        function parseTimeToSeconds(str) {
-            if (!str?.trim()) return null;
-            const clean = str.trim().toUpperCase();
-            const match = clean.match(/^(\d{1,2}):(\d{2})(?::(\d{2}))?\s?(AM|PM)?/i);
-            if (!match) return null;
-            let hours = parseInt(match[1]);
-            const mins = parseInt(match[2]);
-            const secs = match[3] ? parseInt(match[3]) : 0;
-            const ampm = match[4];
-            if (ampm === 'PM' && hours < 12) hours += 12;
-            if (ampm === 'AM' && hours === 12) hours = 0;
-            return (hours * 3600) + (mins * 60) + secs;
+    function parseTimeToSeconds(str) {
+        if (!str?.trim()) return null;
+        const clean = str.trim().toUpperCase();
+        const match = clean.match(/^(\d{1,2}):(\d{2})(?::(\d{2}))?\s?(AM|PM)?/i);
+        if (!match) return null;
+        let hours = parseInt(match[1]);
+        const mins = parseInt(match[2]);
+        const secs = match[3] ? parseInt(match[3]) : 0;
+        const ampm = match[4];
+        if (ampm === 'PM' && hours < 12) hours += 12;
+        if (ampm === 'AM' && hours === 12) hours = 0;
+        return (hours * 3600) + (mins * 60) + secs;
+    }
+
+    function formatDuration(s) {
+        const h = Math.floor(s / 3600);
+        const m = Math.floor((s % 3600) / 60);
+        return `${h}h ${m}m`;
+    }
+
+    // ✅ Lunch/Tea message based on LAST OUT time
+    function secondsToAwayMessage(sec) {
+        if (sec === null || sec === undefined) return "Away / Not Working";
+        const mins = Math.floor(sec / 60);
+
+        if (mins >= 720 && mins < 840) return "On Lunch Break 🍽️"; // 12-2
+        if (mins >= 960 && mins < 1020) return "On Tea Break ☕";   // 4-5
+
+        return "Away / Not Working";
+    }
+
+    function createStars() {
+        celebrationStars.innerHTML = '';
+        celebrationStars.style.display = 'block';
+
+        for (let i = 0; i < 30; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+            star.style.left = Math.random() * 100 + '%';
+            star.style.top = Math.random() * 100 + '%';
+            star.style.animationDelay = Math.random() * 1.5 + 's';
+            star.style.animationDuration = (Math.random() * 1 + 1.5) + 's';
+            celebrationStars.appendChild(star);
         }
 
-        function formatDuration(s) {
-            const h = Math.floor(s / 3600);
-            const m = Math.floor((s % 3600) / 60);
-            return `${h}h ${m}m`;
+        setTimeout(() => {
+            celebrationStars.style.display = 'none';
+        }, 5000);
+    }
+
+    function launchConfetti() {
+        const confetti = [];
+        for (let i = 0; i < 150; i++) {
+            confetti.push({
+                x: Math.random() * confettiCanvas.width,
+                y: -10,
+                vx: (Math.random() - 0.5) * 12,
+                vy: Math.random() * 6 + 6,
+                size: Math.random() * 6 + 4,
+                color: `hsl(${Math.random() * 360}, 70%, 60%)`
+            });
         }
 
-        function secondsToAwayMessage(sec) {
-            if (sec === null || sec === undefined) return "Away / Not Working";
-            const mins = Math.floor(sec / 60);
+        function animate() {
+            ctx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+            confetti.forEach((c, i) => {
+                c.x += c.vx;
+                c.y += c.vy;
+                c.vy += 0.12;
+                c.life = (c.life || 1) - 0.015;
 
-            // Lunch: 12:00 (720) to 14:00 (840)
-            if (mins >= 720 && mins < 840) return "On Lunch Break 🍽️";
-
-            // Tea: 16:00 (960) to 17:00 (1020)
-            if (mins >= 960 && mins < 1020) return "On Tea Break ☕";
-
-            return "Away / Not Working";
-        }
-
-        function createStars() {
-            celebrationStars.innerHTML = '';
-            celebrationStars.style.display = 'block';
-
-            for (let i = 0; i < 30; i++) {
-                const star = document.createElement('div');
-                star.className = 'star';
-                star.style.left = Math.random() * 100 + '%';
-                star.style.top = Math.random() * 100 + '%';
-                star.style.animationDelay = Math.random() * 1.5 + 's';
-                star.style.animationDuration = (Math.random() * 1 + 1.5) + 's';
-                celebrationStars.appendChild(star);
-            }
-
-            setTimeout(() => {
-                celebrationStars.style.display = 'none';
-            }, 5000);
-        }
-
-        function launchConfetti() {
-            const confetti = [];
-            for (let i = 0; i < 150; i++) {
-                confetti.push({
-                    x: Math.random() * confettiCanvas.width,
-                    y: -10,
-                    vx: (Math.random() - 0.5) * 12,
-                    vy: Math.random() * 6 + 6,
-                    size: Math.random() * 6 + 4,
-                    color: `hsl(${Math.random() * 360}, 70%, 60%)`
-                });
-            }
-
-            function animate() {
-                ctx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
-                confetti.forEach((c, i) => {
-                    c.x += c.vx;
-                    c.y += c.vy;
-                    c.vy += 0.12;
-                    c.life = (c.life || 1) - 0.015;
-
-                    if (c.life > 0) {
-                        ctx.save();
-                        ctx.globalAlpha = c.life;
-                        ctx.fillStyle = c.color;
-                        ctx.fillRect(c.x, c.y, c.size, c.size);
-                        ctx.restore();
-                    } else {
-                        confetti.splice(i, 1);
-                    }
-                });
-
-                if (confetti.length > 0) requestAnimationFrame(animate);
-            }
-            animate();
-        }
-
-        function triggerCelebration() {
-            document.body.classList.add('celebrating');
-            launchConfetti();
-            createStars();
-
-            leaveCard.classList.add('celebrating');
-            leaveTime.classList.add('celebrating');
-
-            setTimeout(() => {
-                document.body.classList.remove('celebrating');
-                leaveCard.classList.remove('celebrating');
-                leaveTime.classList.remove('celebrating');
-            }, 5000);
-        }
-
-        // MAIN UPDATE FUNCTION
-        function update() {
-            const lines = logsArea.value.split('\n').map(l => l.trim()).filter(l => l !== '');
-            let totalWorked = 0;
-            let totalBreak = 0;
-            let isWorking = false;
-            let sessions = [];
-            let lastOutTimestamp = null;
-            let lastValidOutForAway = null;
-            let i = 0;
-
-            while (i < lines.length) {
-                const startStr = lines[i];
-                const start = parseTimeToSeconds(startStr);
-
-                if (start === null) {
-                    i++;
-                    continue;
+                if (c.life > 0) {
+                    ctx.save();
+                    ctx.globalAlpha = c.life;
+                    ctx.fillStyle = c.color;
+                    ctx.fillRect(c.x, c.y, c.size, c.size);
+                    ctx.restore();
+                } else {
+                    confetti.splice(i, 1);
                 }
+            });
 
-                if (lastOutTimestamp !== null) {
-                    let breakDuration = start - lastOutTimestamp;
-                    if (breakDuration < 0) breakDuration += 86400;
-                    totalBreak += breakDuration;
-                }
+            if (confetti.length > 0) requestAnimationFrame(animate);
+        }
+        animate();
+    }
 
-                let duration = 0;
-                let endStr = "Currently Working";
-                let currentOutTimestamp = null;
+    function triggerCelebration() {
+        document.body.classList.add('celebrating');
+        launchConfetti();
+        createStars();
 
-                if (i + 1 < lines.length) {
-                    const endStrCandidate = lines[i + 1];
-                    const end = parseTimeToSeconds(endStrCandidate);
+        leaveCard.classList.add('celebrating');
+        leaveTime.classList.add('celebrating');
 
-                    if (end !== null && end > start) {
-                        duration = end - start;
-                        totalWorked += duration;
+        setTimeout(() => {
+            document.body.classList.remove('celebrating');
+            leaveCard.classList.remove('celebrating');
+            leaveTime.classList.remove('celebrating');
+        }, 5000);
+    }
 
-                        endStr = endStrCandidate.split(' ')[0];
-                        currentOutTimestamp = end;
+    function update() {
+        const lines = logsArea.value.split('\n').map(l => l.trim()).filter(l => l !== '');
 
-                        // store last out
-                        lastValidOutForAway = end;
+        let totalWorked = 0;
+        let totalBreak = 0;
+        let isWorking = false;
+        let sessions = [];
+        let lastOutTimestamp = null;
+        let lastValidOutForAway = null;
+        let i = 0;
 
-                        i += 2;
-                    } else {
-                        const now = new Date();
-                        let currentSecs = (now.getHours() * 3600) + (now.getMinutes() * 60) + now.getSeconds();
-                        if (currentSecs < start) currentSecs += 86400;
-                        duration = currentSecs - start;
-                        totalWorked += duration;
-                        isWorking = true;
-                        i++;
-                    }
+        while (i < lines.length) {
+            const startStr = lines[i];
+            const start = parseTimeToSeconds(startStr);
+
+            if (start === null) {
+                i++;
+                continue;
+            }
+
+            if (lastOutTimestamp !== null) {
+                let breakDuration = start - lastOutTimestamp;
+                if (breakDuration < 0) breakDuration += 86400;
+                totalBreak += breakDuration;
+            }
+
+            let duration = 0;
+            let endStr = "Currently Working";
+            let currentOutTimestamp = null;
+
+            if (i + 1 < lines.length) {
+                const endStrCandidate = lines[i + 1];
+                const end = parseTimeToSeconds(endStrCandidate);
+
+                if (end !== null && end > start) {
+                    duration = end - start;
+                    totalWorked += duration;
+
+                    endStr = endStrCandidate.split(' ')[0];
+                    currentOutTimestamp = end;
+                    lastValidOutForAway = end;
+
+                    i += 2;
                 } else {
                     const now = new Date();
                     let currentSecs = (now.getHours() * 3600) + (now.getMinutes() * 60) + now.getSeconds();
@@ -644,159 +637,168 @@
                     isWorking = true;
                     i++;
                 }
-
-                if (sessions.length > 0 && duration < 300 && (start - sessions[sessions.length-1].start) < 900) {
-                    const lastSession = sessions[sessions.length-1];
-                    lastSession.duration += duration;
-                    lastSession.end = endStr;
-                } else {
-                    sessions.push({
-                        start: parseTimeToSeconds(startStr),
-                        startStr: startStr.split(' ')[0],
-                        end: endStr,
-                        duration: duration,
-                        isCurrentlyWorking: endStr === "Currently Working"
-                    });
-                }
-
-                lastOutTimestamp = currentOutTimestamp;
+            } else {
+                const now = new Date();
+                let currentSecs = (now.getHours() * 3600) + (now.getMinutes() * 60) + now.getSeconds();
+                if (currentSecs < start) currentSecs += 86400;
+                duration = currentSecs - start;
+                totalWorked += duration;
+                isWorking = true;
+                i++;
             }
 
-            // sessions list UI
-            const displaySessions = sessions.slice(-20);
-            let sessionHtml = '';
-
-            displaySessions.forEach(session => {
-                const durationText = formatDuration(session.duration);
-                const className = session.isCurrentlyWorking ? 'session-currently-working' : '';
-                sessionHtml += `
-                    <div class="session-item">
-                        <div class="session-times">${session.startStr} → ${session.end}</div>
-                        <div class="session-duration ${className}">+ ${durationText}</div>
-                    </div>`;
+            sessions.push({
+                startStr: startStr.split(' ')[0],
+                end: endStr,
+                duration: duration,
+                isCurrentlyWorking: endStr === "Currently Working"
             });
 
-            const totalSessions = sessions.length;
-            const logCountHtml = totalSessions > 0 ? 
-                `<div class="log-count">${totalSessions} session${totalSessions !== 1 ? 's' : ''} ${isWorking ? '🟢 Currently Working' : ''}</div>` : 
-                '<div class="log-count">No sessions parsed</div>';
+            lastOutTimestamp = currentOutTimestamp;
+        }
 
-            // ring update
-            const progress = Math.min(totalWorked / goalSeconds, 1);
-            const offset = circumference - (progress * circumference);
-            ring.style.strokeDashoffset = offset;
-            document.getElementById('percent').innerText = Math.floor(progress * 100) + '%';
+        // session list UI
+        const displaySessions = sessions.slice(-20);
+        let sessionHtml = '';
 
-            // stats
-            document.getElementById('worked').innerText = formatDuration(totalWorked);
-            document.getElementById('breakTime').innerText = formatDuration(totalBreak);
-            document.getElementById('remainingTime').innerText = formatDuration(Math.max(0, goalSeconds - totalWorked));
+        displaySessions.forEach(session => {
+            const durationText = formatDuration(session.duration);
+            const className = session.isCurrentlyWorking ? 'session-currently-working' : '';
+            sessionHtml += `
+                <div class="session-item">
+                    <div class="session-times">${session.startStr} → ${session.end}</div>
+                    <div class="session-duration ${className}">+ ${durationText}</div>
+                </div>`;
+        });
 
-            // badge
-            if (isWorking) {
-                statusBadge.className = 'status-badge working';
-                statusText.innerText = "Active";
-            } else {
-                statusBadge.className = 'status-badge away';
-                statusText.innerText = "Away";
-            }
+        const totalSessions = sessions.length;
+        const logCountHtml = totalSessions > 0 ?
+            `<div class="log-count">${totalSessions} session${totalSessions !== 1 ? 's' : ''} ${isWorking ? '🟢 Currently Working' : ''}</div>` :
+            '<div class="log-count">No sessions parsed</div>';
 
-            // ✅ TAB TITLE (Leave time or Completed)
-            if (totalWorked >= goalSeconds) {
-                document.title = "✅ Done for Today";
-            } else {
-                const leaveTimeCalcForTitle = new Date(Date.now() + (goalSeconds - totalWorked) * 1000);
-                const leaveAtTitle = leaveTimeCalcForTitle.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-                document.title = `⏳ Leave @ ${leaveAtTitle}`;
-            }
+        // progress ring
+        const progress = Math.min(totalWorked / goalSeconds, 1);
+        const offset = circumference - (progress * circumference);
+        ring.style.strokeDashoffset = offset;
+        document.getElementById('percent').innerText = Math.floor(progress * 100) + '%';
 
-            // bottom card logic
-            if (totalWorked >= goalSeconds) {
-                leaveLabel.innerText = "Done for Today ✅";
-                leaveTime.innerText = "100%";
-                leaveTime.classList.add('celebrating');
-                leaveMessage.innerText = "";
-                leaveCard.style.background = "linear-gradient(45deg, var(--success), var(--celebration-gold))";
+        // stats
+        document.getElementById('worked').innerText = formatDuration(totalWorked);
+        document.getElementById('breakTime').innerText = formatDuration(totalBreak);
+        document.getElementById('remainingTime').innerText = formatDuration(Math.max(0, goalSeconds - totalWorked));
 
-                if (!notificationSent) {
-                    triggerCelebration();
-                    notificationSent = true;
-                }
-            } else {
-                notificationSent = false;
+        // badge
+        if (isWorking) {
+            statusBadge.className = 'status-badge working';
+            statusText.innerText = "Active";
+        } else {
+            statusBadge.className = 'status-badge away';
+            statusText.innerText = "Away";
+        }
 
-                const leaveTimeCalc = new Date(Date.now() + (goalSeconds - totalWorked) * 1000);
-                const leaveAt = leaveTimeCalc.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-
-                leaveTime.classList.remove('celebrating');
-
-                if (isWorking) {
-                    leaveLabel.innerText = "You are Working 🟢";
-                    leaveTime.innerText = leaveAt;
-                    leaveMessage.innerText = "Add OUT time to lock final total ✅";
-                    leaveCard.style.background = "var(--primary)";
-                    leaveCard.classList.remove('celebrating');
-                } else {
-                    leaveLabel.innerText = "Estimated Departure";
-                    leaveTime.innerText = leaveAt;
-                    leaveMessage.innerText = secondsToAwayMessage(lastValidOutForAway);
-                    leaveCard.style.background = "var(--primary)";
-                    leaveCard.classList.remove('celebrating');
-                }
-            }
-
+        // ✅ if no logs
+        const hasAnyLog = sessions.length > 0;
+        if (!hasAnyLog) {
+            document.title = "Keka Pro Tracker";
+            leaveLabel.innerText = "Paste logs to start ✍️";
+            leaveTime.innerText = "--:--";
+            leaveMessage.innerText = "";
+            leaveCard.style.background = "var(--primary)";
+            leaveTime.classList.remove('celebrating');
+            leaveCard.classList.remove('celebrating');
             sessionList.innerHTML = sessionHtml + logCountHtml;
-            localStorage.setItem('kekaLogs', logsArea.value);
+            return;
         }
 
-        function handleInput() { 
-            update(); 
-            saveIndicator.style.opacity = '1'; 
-            setTimeout(() => saveIndicator.style.opacity = '0', 1000); 
+        // ✅ tab title
+        if (totalWorked >= goalSeconds) {
+            document.title = "Done for Today";
+        } else {
+            const leaveTimeCalcForTitle = new Date(Date.now() + (goalSeconds - totalWorked) * 1000);
+            const leaveAtTitle = leaveTimeCalcForTitle.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            document.title = `⏳ Leave @ ${leaveAtTitle}`;
         }
 
-        function clearLogs() { 
-            logsArea.value = ''; 
+        // ✅ bottom card
+        if (totalWorked >= goalSeconds) {
+    leaveLabel.innerText = ""; // ✅ remove small duplicate text
+    leaveTime.innerText = "Done for Today"; // ✅ only big text
+    leaveTime.classList.add('celebrating');
+    leaveMessage.innerText = "";
+    leaveCard.style.background = "linear-gradient(45deg, var(--success), var(--celebration-gold))";
+
+    if (!notificationSent) {
+        triggerCelebration();
+        notificationSent = true;
+    }
+}
+else {
             notificationSent = false;
-            handleInput(); 
+
+            const leaveTimeCalc = new Date(Date.now() + (goalSeconds - totalWorked) * 1000);
+            const leaveAt = leaveTimeCalc.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+            leaveTime.classList.remove('celebrating');
+            leaveLabel.innerText = "Estimated Departure";
+            leaveTime.innerText = leaveAt;
+
+            // ✅ IMPORTANT: Lunch/Tea/Away message shown here
+            leaveMessage.innerText = isWorking ? "Add OUT time to lock final total ✅" : secondsToAwayMessage(lastValidOutForAway);
+
+            leaveCard.style.background = "var(--primary)";
+            leaveCard.classList.remove('celebrating');
         }
 
-        // chips
-        document.getElementById('chips').addEventListener('click', (e) => {
-            const chip = e.target.closest('.goal-chip');
-            if (chip) {
-                document.querySelectorAll('.goal-chip').forEach(c => c.classList.remove('active'));
-                chip.classList.add('active');
-                goalSeconds = parseInt(chip.dataset.sec);
-                notificationSent = false;
-                update();
-            }
-        });
+        sessionList.innerHTML = sessionHtml + logCountHtml;
+        localStorage.setItem('kekaLogs', logsArea.value);
+    }
 
-        function toggleTheme() {
-            document.body.classList.toggle('dark');
-            localStorage.setItem('theme', document.body.classList.contains('dark') ? 'dark' : 'light');
-        }
+    function handleInput() {
+        update();
+        saveIndicator.style.opacity = '1';
+        setTimeout(() => saveIndicator.style.opacity = '0', 1000);
+    }
 
-        function setGreeting() {
-            const hour = new Date().getHours();
-            const text = document.getElementById('greeting');
-            if (hour < 12) text.innerText = "Good Morning! ☀️";
-            else if (hour < 17) text.innerText = "Good Afternoon! 🌤️";
-            else text.innerText = "Good Evening! 🌙";
-        }
+    function clearLogs() {
+        logsArea.value = '';
+        notificationSent = false;
+        handleInput();
+    }
 
-        // init
-        window.addEventListener('DOMContentLoaded', () => {
-            const savedLogs = localStorage.getItem('kekaLogs');
-            if (savedLogs) logsArea.value = savedLogs;
-            if (localStorage.getItem('theme') === 'dark') document.body.classList.add('dark');
-            setGreeting();
+    document.getElementById('chips').addEventListener('click', (e) => {
+        const chip = e.target.closest('.goal-chip');
+        if (chip) {
+            document.querySelectorAll('.goal-chip').forEach(c => c.classList.remove('active'));
+            chip.classList.add('active');
+            goalSeconds = parseInt(chip.dataset.sec);
+            notificationSent = false;
             update();
-            setInterval(update, 1000);
-        });
+        }
+    });
 
-        logsArea.addEventListener('input', handleInput);
-    </script>
+    function toggleTheme() {
+        document.body.classList.toggle('dark');
+        localStorage.setItem('theme', document.body.classList.contains('dark') ? 'dark' : 'light');
+    }
+
+    function setGreeting() {
+        const hour = new Date().getHours();
+        const text = document.getElementById('greeting');
+        if (hour < 12) text.innerText = "Good Morning! ☀️";
+        else if (hour < 17) text.innerText = "Good Afternoon! 🌤️";
+        else text.innerText = "Good Evening! 🌙";
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+        const savedLogs = localStorage.getItem('kekaLogs');
+        if (savedLogs) logsArea.value = savedLogs;
+        if (localStorage.getItem('theme') === 'dark') document.body.classList.add('dark');
+        setGreeting();
+        update();
+        setInterval(update, 1000);
+    });
+
+    logsArea.addEventListener('input', handleInput);
+</script>
 </body>
 </html>
